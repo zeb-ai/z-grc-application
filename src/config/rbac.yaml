@@ -1,0 +1,78 @@
+# RBAC Configuration for Governance Engine
+# This file defines application-wide and group-level permissions
+
+# Application-wide roles (stored in User.is_superadmin)
+application_roles:
+  superadmin:
+    description: "God mode - can do everything in all groups and application"
+    permissions:
+      - "*"  # Wildcard means all permissions
+
+# Group-level roles (stored in UserGroup.role)
+group_roles:
+  admin:
+    description: "Full control over their group"
+    permissions:
+      # Group Management
+      - groups.view
+      - groups.edit
+      - groups.delete
+      - groups.settings.view
+      - groups.settings.manage
+
+      # Member Management
+      - members.view
+      - members.view_details
+      - members.add
+      - members.remove
+      - members.edit_role
+
+      # Quota Management
+      - quota.view_own
+      - quota.view_all
+      - quota.manage
+
+      # Analytics & Reports
+      - analytics.view
+      - reports.view
+      - reports.export
+
+  member:
+    description: "Can view everything within the group, but cannot modify anything"
+    permissions:
+      # View Access
+      - groups.view
+      - groups.settings.view
+      - members.view
+      - members.view_details
+      - quota.view_own
+      - quota.view_all
+      - analytics.view
+      - reports.view
+
+# Permission Descriptions
+# This section documents what each permission allows
+permission_descriptions:
+  # Group Permissions
+  groups.view: "View group basic information (name, created date, member count)"
+  groups.edit: "Edit group details (name, description)"
+  groups.delete: "Delete the entire group"
+  groups.settings.view: "View group settings (default tokens, etc.)"
+  groups.settings.manage: "Modify group settings"
+
+  # Member Permissions
+  members.view: "View member list"
+  members.view_details: "View detailed member information (email, joined date, status)"
+  members.add: "Invite new members to the group"
+  members.remove: "Remove members from the group"
+  members.edit_role: "Change member roles (admin/member/viewer)"
+
+  # Quota Permissions
+  quota.view_own: "View personal token quota"
+  quota.view_all: "View all members' token quotas"
+  quota.manage: "Adjust token quotas (increase/decrease)"
+
+  # Analytics & Reports
+  analytics.view: "View usage statistics and analytics"
+  reports.view: "View generated reports"
+  reports.export: "Export reports and data"
