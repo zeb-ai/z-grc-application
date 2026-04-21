@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { LogsStats } from "@/components/logs/LogsStats";
-import { LogsFilters } from "@/components/logs/LogsFilters";
-import { LogsTable } from "@/components/logs/LogsTable";
+import { TelemetryStats } from "@/components/telemetry/TelemetryStats";
+import { TelemetryFilters } from "@/components/telemetry/TelemetryFilters";
+import { TracesList } from "@/components/telemetry/TracesList";
 import {
   Card,
   CardContent,
@@ -14,20 +14,20 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type {
-  LogsStats as Stats,
-  LogFilters,
-  Log,
+  TelemetryStats as Stats,
+  TelemetryFilters as Filters,
+  Trace,
 } from "@/types/telemetry";
 
-export default function LogsPage() {
+export default function TelemetryPage() {
   const [stats, setStats] = useState<Stats | null>(null);
-  const [logs, setLogs] = useState<Log[]>([]);
+  const [traces, setTraces] = useState<Trace[]>([]);
   const [services, setServices] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [logsLoading, setLogsLoading] = useState(true);
-  const [filters, setFilters] = useState<LogFilters>({
-    severity: "ALL",
-    limit: 100,
+  const [tracesLoading, setTracesLoading] = useState(true);
+  const [filters, setFilters] = useState<Filters>({
+    status: "ALL",
+    limit: 50,
     offset: 0,
   });
   const [total, setTotal] = useState(0);
@@ -37,15 +37,15 @@ export default function LogsPage() {
     fetchStats();
   }, []);
 
-  // Fetch logs when filters change
+  // Fetch traces when filters change
   useEffect(() => {
-    fetchLogs();
+    fetchTraces();
   }, [filters]);
 
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/logs/stats");
+      const res = await fetch("/api/telemetry/stats");
       const data = await res.json();
 
       if (res.ok) {
@@ -58,91 +58,92 @@ export default function LogsPage() {
       }
     } catch (error) {
       console.error("Failed to fetch stats:", error);
-      toast.error("Failed to fetch logs stats");
+      toast.error("Failed to fetch telemetry stats");
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchLogs = async () => {
+  const fetchTraces = async () => {
     try {
-      setLogsLoading(true);
+      setTracesLoading(true);
 
       // Build query params
       const params = new URLSearchParams();
       if (filters.user_id) params.append("user_id", filters.user_id);
       if (filters.group_id) params.append("group_id", filters.group_id);
       if (filters.service) params.append("service", filters.service);
-      if (filters.severity && filters.severity !== "ALL")
-        params.append("severity", filters.severity);
-      if (filters.search) params.append("search", filters.search);
+      if (filters.status && filters.status !== "ALL")
+        params.append("status", filters.status);
+      if (filters.min_duration)
+        params.append("min_duration", filters.min_duration.toString());
       if (filters.from) params.append("from", filters.from);
       if (filters.to) params.append("to", filters.to);
-      params.append("limit", (filters.limit || 100).toString());
+      params.append("limit", (filters.limit || 50).toString());
       params.append("offset", (filters.offset || 0).toString());
 
-      const res = await fetch(`/api/logs?${params.toString()}`);
+      const res = await fetch(`/api/telemetry/traces?${params.toString()}`);
       const data = await res.json();
 
       if (res.ok) {
-        setLogs(data.logs);
+        setTraces(data.traces);
         setTotal(data.total);
       } else {
-        toast.error(data.error || "Failed to fetch logs");
+        toast.error(data.error || "Failed to fetch traces");
       }
     } catch (error) {
-      console.error("Failed to fetch logs:", error);
-      toast.error("Failed to fetch logs");
+      console.error("Failed to fetch traces:", error);
+      toast.error("Failed to fetch traces");
     } finally {
-      setLogsLoading(false);
+      setTracesLoading(false);
     }
   };
 
   const handleLoadMore = () => {
     setFilters({
       ...filters,
-      offset: (filters.offset || 0) + (filters.limit || 100),
+      offset: (filters.offset || 0) + (filters.limit || 50),
     });
   };
 
-  const hasMore = (filters.offset || 0) + logs.length < total;
+  const hasMore = (filters.offset || 0) + traces.length < total;
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       {/* Header */}
       <div className="mt-4">
-        <h1 className="text-3xl font-bold tracking-tight">Logs</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Telemetry</h1>
         <p className="text-muted-foreground">
-          View and analyze system logs and events
+          Distributed traces and request flows across services
         </p>
       </div>
 
       {/* Stats */}
-      {stats && <LogsStats stats={stats} loading={loading} />}
+      {stats && <TelemetryStats stats={stats} loading={loading} />}
 
-      {/* Logs */}
+      {/* Traces */}
       <Card>
         <CardHeader>
-          <CardTitle>Log Entries</CardTitle>
+          <CardTitle>Traces</CardTitle>
           <CardDescription>
             {total > 0
-              ? `Showing ${logs.length} of ${total.toLocaleString()} logs`
-              : "No logs found"}
+              ? `Showing ${traces.length} of ${total.toLocaleString()} traces`
+              : "No traces found"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Filters */}
-          <LogsFilters
+          <TelemetryFilters
             filters={filters}
             onFiltersChange={setFilters}
             services={services}
           />
 
-          {/* Logs Table */}
-          <LogsTable logs={logs} loading={logsLoading} />
+          {/* Traces List */}
+          <TracesList traces={traces} loading={tracesLoading} />
 
           {/* Load More */}
-          {hasMore && !logsLoading && (
+          {hasMore && !tracesLoading && (
             <div className="flex justify-center pt-4">
               <Button onClick={handleLoadMore} variant="outline">
                 Load More

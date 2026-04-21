@@ -75,8 +75,13 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Documentation",
-      url: "/docs",
+      title: "Z-GRC Package Documentation",
+      url: "https://zeb-ai.github.io/z-grc/",
+      icon: <BookOpenIcon />,
+    },
+    {
+      title: "Governance Documentation",
+      url: "https://zeb-ai.github.io/z-grc/",
       icon: <BookOpenIcon />,
     },
     {
