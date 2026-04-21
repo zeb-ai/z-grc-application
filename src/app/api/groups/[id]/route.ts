@@ -8,7 +8,7 @@ import { initializeDatabase } from "@/lib/db";
 
 const UpdateGroupSchema = z.object({
   name: z.string().min(3).max(255).optional(),
-  default_tokens: z.number().min(0).optional(),
+  default_cost_limit: z.number().min(0).optional(),
 });
 
 // GET /api/groups/[id] - Get group details
@@ -86,18 +86,13 @@ export const GET = withAuthRequired<any>(
             quota: quota
               ? {
                   id: quota.id,
-                  tokens_remaining: quota.tokens_remaining,
-                  tokens_allocated: group.default_tokens,
-                  tokens_used: Math.max(
-                    0,
-                    group.default_tokens - quota.tokens_remaining,
-                  ),
+                  total_cost: Number(quota.total_cost),
+                  used_cost: Number(quota.used_cost),
                 }
               : {
                   id: 0,
-                  tokens_remaining: group.default_tokens,
-                  tokens_allocated: group.default_tokens,
-                  tokens_used: 0,
+                  total_cost: Number(group.default_cost_limit),
+                  used_cost: 0,
                 },
           };
         }),
@@ -125,9 +120,8 @@ export const GET = withAuthRequired<any>(
         },
         quota: {
           id: 0,
-          tokens_remaining: group.default_tokens,
-          tokens_allocated: group.default_tokens,
-          tokens_used: 0,
+          total_cost: Number(group.default_cost_limit),
+          used_cost: 0,
         },
       }));
 
@@ -217,9 +211,9 @@ export const PUT = withAuthRequired<any>(
       }
 
       // Update group
-      const { name, default_tokens } = validationResult.data;
+      const { name, default_cost_limit } = validationResult.data;
       if (name !== undefined) group.name = name;
-      if (default_tokens !== undefined) group.default_tokens = default_tokens;
+      if (default_cost_limit !== undefined) group.default_cost_limit = default_cost_limit;
 
       await groupRepository.save(group);
 

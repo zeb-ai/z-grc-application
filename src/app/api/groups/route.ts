@@ -7,7 +7,7 @@ import { initializeDatabase } from "@/lib/db";
 
 const CreateGroupSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters").max(255),
-  default_tokens: z.number().min(0, "Default tokens must be non-negative"),
+  default_cost_limit: z.number().min(0, "Default cost limit must be non-negative"),
 });
 
 // GET /api/groups - List all groups
@@ -119,7 +119,7 @@ export const POST = withAuthRequired<any>(async (request: NextRequest) => {
       );
     }
 
-    const { name, default_tokens } = validationResult.data;
+    const { name, default_cost_limit } = validationResult.data;
 
     const dataSource = await initializeDatabase();
     const groupRepository = dataSource.getRepository(Group);
@@ -145,7 +145,7 @@ export const POST = withAuthRequired<any>(async (request: NextRequest) => {
     const groupId = Date.now();
     const group = groupRepository.create({
       name,
-      default_tokens,
+      default_cost_limit,
       created_by: user.user_id,
       group_id: groupId,
     });
@@ -167,8 +167,8 @@ export const POST = withAuthRequired<any>(async (request: NextRequest) => {
       id: Date.now() + 2,
       user_id: user.user_id,
       group_id: groupId,
-      tokens_remaining: default_tokens,
-      tokens_used: 0,
+      total_cost: default_cost_limit,
+      used_cost: 0,
     });
 
     await quotaRepository.save(quota);

@@ -2,7 +2,7 @@ export interface Group {
   group_id: number;
   name: string;
   created_by: string;
-  default_tokens: number;
+  default_cost_limit: number;
   created_at: Date | string;
   creator?: {
     user_id: string;
@@ -27,20 +27,19 @@ export interface GroupMember {
   } | null;
   quota?: {
     id: number;
-    tokens_remaining: number;
-    tokens_allocated: number;
-    tokens_used: number;
+    total_cost: number;
+    used_cost: number;
   };
 }
 
 export interface CreateGroupDto {
   name: string;
-  default_tokens: number;
+  default_cost_limit: number;
 }
 
 export interface UpdateGroupDto {
   name?: string;
-  default_tokens?: number;
+  default_cost_limit?: number;
 }
 
 export interface AddMemberDto {
@@ -50,7 +49,7 @@ export interface AddMemberDto {
 }
 
 export interface UpdateQuotaDto {
-  tokens_remaining: number;
+  total_cost: number;
 }
 
 export interface GroupListResponse {

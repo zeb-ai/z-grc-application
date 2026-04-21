@@ -119,8 +119,9 @@ export function MembersTable({
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Tokens Remaining</TableHead>
-              <TableHead className="text-right">Tokens Used</TableHead>
+              <TableHead className="text-right">Cost Budget</TableHead>
+              <TableHead className="text-right">Cost Used</TableHead>
+              <TableHead className="text-right">Cost Remaining</TableHead>
               <TableHead>Joined Date</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -128,7 +129,7 @@ export function MembersTable({
           <TableBody>
             {filteredMembers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-8">
+                <TableCell colSpan={9} className="text-center py-8">
                   <div className="text-muted-foreground">
                     {searchQuery
                       ? "No members found matching your search"
@@ -158,23 +159,40 @@ export function MembersTable({
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right font-mono">
-                    {member.quota?.tokens_remaining !== undefined ? (
-                      <span
-                        className={
-                          member.quota.tokens_remaining < 100
-                            ? "text-red-600"
-                            : ""
-                        }
-                      >
-                        {member.quota.tokens_remaining.toLocaleString()}
+                    {member.quota?.total_cost !== undefined ? (
+                      <span className="font-semibold text-lg">
+                        ${Number(member.quota.total_cost).toFixed(2)}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">-</span>
                     )}
                   </TableCell>
                   <TableCell className="text-right font-mono">
-                    {member.quota?.tokens_used !== undefined ? (
-                      member.quota.tokens_used.toLocaleString()
+                    {member.quota?.used_cost !== undefined ? (
+                      <span
+                        className={
+                          Number(member.quota.used_cost) >= Number(member.quota.total_cost)
+                            ? "text-red-600 font-semibold"
+                            : ""
+                        }
+                      >
+                        ${Number(member.quota.used_cost).toFixed(4)}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">-</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right font-mono">
+                    {member.quota?.total_cost !== undefined && member.quota?.used_cost !== undefined ? (
+                      <span
+                        className={
+                          (Number(member.quota.total_cost) - Number(member.quota.used_cost)) < 1
+                            ? "text-red-600 font-semibold"
+                            : "text-green-600"
+                        }
+                      >
+                        ${Math.max(0, Number(member.quota.total_cost) - Number(member.quota.used_cost)).toFixed(2)}
+                      </span>
                     ) : (
                       <span className="text-muted-foreground">-</span>
                     )}

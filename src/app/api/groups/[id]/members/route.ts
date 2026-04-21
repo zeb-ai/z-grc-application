@@ -153,8 +153,8 @@ export const POST = withAuthRequired<any>(
         id: Date.now(),
         user_id: user.user_id,
         group_id: groupId,
-        tokens_remaining: group.default_tokens,
-        tokens_used: 0,
+        total_cost: group.default_cost_limit,
+        used_cost: 0,
       });
 
       await quotaRepository.save(quota);
@@ -176,9 +176,8 @@ export const POST = withAuthRequired<any>(
             },
             quota: {
               id: quota.id,
-              tokens_remaining: quota.tokens_remaining,
-              tokens_allocated: group.default_tokens,
-              tokens_used: 0,
+              total_cost: Number(quota.total_cost),
+              used_cost: 0,
             },
           },
         },

@@ -147,10 +147,10 @@ export default function UserGroupsPage() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Coins className="h-4 w-4" />
-                            <span>Default Tokens</span>
+                            <span>Default Cost Limit</span>
                           </div>
                           <Badge variant="outline">
-                            {group.default_tokens}
+                            ${Number(group.default_cost_limit).toFixed(2)}
                           </Badge>
                         </div>
                         <div className="pt-2 border-t">

@@ -6,10 +6,10 @@ import { initializeDatabase } from "@/lib/db";
 const ConsumeQuotaSchema = z.object({
   user_id: z.string().min(1, "user_id is required"),
   policy_id: z.string().min(1, "policy_id is required"), // This is group_id
-  amount: z.number().int().positive("amount must be a positive integer"),
+  cost: z.number().positive("cost must be a positive number"),
 });
 
-// POST /api/quota/consume - Consume tokens and update quota
+// POST /api/quota/consume - Consume cost and update quota
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { user_id, policy_id, amount } = validationResult.data;
+    const { user_id, policy_id, cost } = validationResult.data;
     const group_id = Number.parseInt(policy_id);
 
     if (Number.isNaN(group_id)) {
@@ -53,25 +53,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update quota
-    quota.tokens_used = (quota.tokens_used || 0) + amount;
-    quota.tokens_remaining = Math.max(0, quota.tokens_remaining - amount);
+    // Update cost
+    quota.used_cost = Number(quota.used_cost || 0) + cost;
 
     await quotaRepository.save(quota);
 
-    // Calculate and return updated quota status
-    const used_quota = quota.tokens_used;
-    const monthly_quota = quota.tokens_remaining + used_quota;
-    const remaining_quota = quota.tokens_remaining;
+    // Calculate remaining cost
+    const used_cost = Number(quota.used_cost);
+    const total_cost = Number(quota.total_cost);
+    const remaining_cost = Math.max(0, total_cost - used_cost);
 
     console.log(
-      `Consumed ${amount} tokens for user ${user_id} in group ${group_id}. Used: ${used_quota}, Remaining: ${remaining_quota}`,
+      `Consumed $${cost} for user ${user_id} in group ${group_id}. Used: $${used_cost}, Remaining: $${remaining_cost}`,
     );
 
     return NextResponse.json({
-      used_quota,
-      remaining_quota,
-      monthly_quota,
+      used_cost,
+      remaining_cost,
+      total_cost,
     });
   } catch (error) {
     console.error("Failed to consume quota:", error);

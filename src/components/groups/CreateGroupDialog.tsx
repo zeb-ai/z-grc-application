@@ -26,7 +26,7 @@ export function CreateGroupDialog({ onGroupCreated }: CreateGroupDialogProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    default_tokens: 1000000,
+    default_cost_limit: 20,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,7 +45,7 @@ export function CreateGroupDialog({ onGroupCreated }: CreateGroupDialogProps) {
       if (res.ok) {
         toast.success("Group created successfully");
         setOpen(false);
-        setFormData({ name: "", default_tokens: 1000000 });
+        setFormData({ name: "", default_cost_limit: 100 });
         if (onGroupCreated) {
           onGroupCreated(data.group);
         }
@@ -73,7 +73,7 @@ export function CreateGroupDialog({ onGroupCreated }: CreateGroupDialogProps) {
           <DialogHeader>
             <DialogTitle>Create User Group</DialogTitle>
             <DialogDescription>
-              Create a new user group to manage permissions and token.
+              Create a new user group to manage permissions and cost budgets.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -93,24 +93,31 @@ export function CreateGroupDialog({ onGroupCreated }: CreateGroupDialogProps) {
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="default_tokens">Default Tokens</Label>
-              <Input
-                id="default_tokens"
-                type="number"
-                placeholder="1,000,000"
-                value={formData.default_tokens}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    default_tokens: Number.parseInt(e.target.value, 10) || 0,
-                  })
-                }
-                required
-                min={0}
-                disabled={loading}
-              />
+              <Label htmlFor="default_cost_limit">Default Cost Limit (USD)</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  $
+                </span>
+                <Input
+                  id="default_cost_limit"
+                  type="number"
+                  step="0.01"
+                  placeholder="100.00"
+                  value={formData.default_cost_limit}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      default_cost_limit: Number.parseFloat(e.target.value) || 0,
+                    })
+                  }
+                  required
+                  min={0}
+                  disabled={loading}
+                  className="pl-7"
+                />
+              </div>
               <p className="text-xs text-muted-foreground">
-                Number of tokens each member receives by default
+                Cost budget each member receives by default
               </p>
             </div>
           </div>

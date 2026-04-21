@@ -22,11 +22,11 @@ export class Quota {
   @Column()
   group_id: number;
 
-  @Column()
-  tokens_remaining: number;
+  @Column({ type: "decimal", precision: 10, scale: 6, default: 0 })
+  total_cost: number;
 
-  @Column({ default: 0 })
-  tokens_used: number;
+  @Column({ type: "decimal", precision: 10, scale: 6, default: 0 })
+  used_cost: number;
 
   user?: User;
   group?: Group;

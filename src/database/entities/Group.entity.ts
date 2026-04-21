@@ -25,8 +25,8 @@ export class Group {
   @Column()
   created_by: string;
 
-  @Column()
-  default_tokens: number;
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 100 })
+  default_cost_limit: number;
 
   @CreateDateColumn()
   created_at: Date;

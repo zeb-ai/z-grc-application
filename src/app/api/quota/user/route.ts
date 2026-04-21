@@ -42,21 +42,21 @@ export async function GET(request: NextRequest) {
       // User not in group or no quota allocated
       // Return zeros
       return NextResponse.json({
-        used_quota: 0,
-        remaining_quota: 0,
-        monthly_quota: 0,
+        used_cost: 0,
+        remaining_cost: 0,
+        total_cost: 0,
       });
     }
 
-    // Calculate quota values
-    const used_quota = quota.tokens_used || 0;
-    const monthly_quota = quota.tokens_remaining + used_quota;
-    const remaining_quota = quota.tokens_remaining;
+    // Calculate cost values
+    const used_cost = Number(quota.used_cost || 0);
+    const total_cost = Number(quota.total_cost || 0);
+    const remaining_cost = Math.max(0, total_cost - used_cost);
 
     return NextResponse.json({
-      used_quota,
-      remaining_quota,
-      monthly_quota,
+      used_cost,
+      remaining_cost,
+      total_cost,
     });
   } catch (error) {
     console.error("Failed to fetch quota:", error);

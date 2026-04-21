@@ -190,12 +190,12 @@ export default function UserGroupDetailPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Default Tokens
+              Default Cost Limit
             </CardTitle>
             <Coins className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{group.default_tokens}</div>
+            <div className="text-2xl font-bold">${Number(group.default_cost_limit).toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">Per member</p>
           </CardContent>
         </Card>

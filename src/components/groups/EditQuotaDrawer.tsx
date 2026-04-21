@@ -19,12 +19,11 @@ import { Separator } from "@/components/ui/separator";
 import toast from "react-hot-toast";
 import type { GroupMember } from "@/types/group";
 import {
-  Coins,
+  DollarSign,
   TrendingUp,
   TrendingDown,
   User,
   Mail,
-  Calendar,
   Activity,
 } from "lucide-react";
 
@@ -44,14 +43,14 @@ export function EditQuotaDrawer({
   onSuccess,
 }: EditQuotaDrawerProps) {
   const [loading, setLoading] = useState(false);
-  const [tokensToAdd, setTokensToAdd] = useState(0);
+  const [costToAdd, setCostToAdd] = useState(0);
 
-  const currentTokens = member.quota?.tokens_remaining || 0;
-  const tokensUsed = member.quota?.tokens_used || 0;
-  const tokensAllocated = member.quota?.tokens_allocated || 0;
-  const newTotal = currentTokens + tokensToAdd;
+  const currentCost = Number(member.quota?.total_cost || 0);
+  const costUsed = Number(member.quota?.used_cost || 0);
+  const newTotal = Math.max(0, currentCost + costToAdd);
   const usagePercentage =
-    tokensAllocated > 0 ? Math.round((tokensUsed / tokensAllocated) * 100) : 0;
+    currentCost > 0 ? Math.round((costUsed / currentCost) * 100) : 0;
+  const remainingCost = Math.max(0, currentCost - costUsed);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +63,7 @@ export function EditQuotaDrawer({
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            tokens_remaining: newTotal,
+            total_cost: newTotal,
           }),
         },
       );
@@ -72,10 +71,10 @@ export function EditQuotaDrawer({
       const data = await res.json();
 
       if (res.ok) {
-        toast.success("Quota updated successfully");
+        toast.success("Cost quota updated successfully");
         onSuccess();
         onOpenChange(false);
-        setTokensToAdd(0);
+        setCostToAdd(0);
       } else {
         toast.error(data.error || "Failed to update quota");
       }
@@ -92,9 +91,9 @@ export function EditQuotaDrawer({
       <DrawerContent className="h-screen top-0 right-0 left-auto mt-0 w-[500px] rounded-none">
         <div className="flex flex-col h-full">
           <DrawerHeader className="text-left">
-            <DrawerTitle>Manage Token Quota</DrawerTitle>
+            <DrawerTitle>Manage Cost Quota</DrawerTitle>
             <DrawerDescription>
-              Update token allocation and view usage statistics
+              Update cost allocation and view usage statistics
             </DrawerDescription>
           </DrawerHeader>
 
@@ -139,16 +138,16 @@ export function EditQuotaDrawer({
                   <div className="grid grid-cols-2 gap-4 pt-2">
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground">
-                        Tokens Used
+                        Cost Used
                       </p>
                       <p className="text-lg font-bold font-mono text-red-600">
-                        {tokensUsed.toLocaleString()}
+                        ${costUsed.toFixed(4)}
                       </p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground">Allocated</p>
-                      <p className="text-lg font-bold font-mono">
-                        {tokensAllocated.toLocaleString()}
+                      <p className="text-xs text-muted-foreground">Remaining</p>
+                      <p className="text-lg font-bold font-mono text-green-600">
+                        ${remainingCost.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -157,15 +156,15 @@ export function EditQuotaDrawer({
 
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Coins className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="font-semibold">Tokens Remaining</h3>
+                  <DollarSign className="h-5 w-5 text-muted-foreground" />
+                  <h3 className="font-semibold">Total Cost Budget</h3>
                 </div>
                 <div className="rounded-lg border p-4 bg-primary/5">
                   <p className="text-3xl font-bold font-mono">
-                    {currentTokens.toLocaleString()}
+                    ${currentCost.toFixed(2)}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Available for use
+                    Current budget limit
                   </p>
                 </div>
               </div>
@@ -173,23 +172,29 @@ export function EditQuotaDrawer({
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="font-semibold">Adjust Tokens</h3>
+                <h3 className="font-semibold">Adjust Budget</h3>
 
                 <div className="grid gap-2">
-                  <Input
-                    id="tokensToAdd"
-                    type="number"
-                    placeholder="Enter amount (use negative to reduce)"
-                    value={tokensToAdd === 0 ? "" : tokensToAdd}
-                    onChange={(e) =>
-                      setTokensToAdd(Number.parseInt(e.target.value, 10) || 0)
-                    }
-                    disabled={loading}
-                    autoFocus
-                    className="text-2xl font-mono p-4 h-13 border-2 border-primary/50 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-2xl font-mono text-muted-foreground">
+                      $
+                    </span>
+                    <Input
+                      id="costToAdd"
+                      type="number"
+                      step="0.01"
+                      placeholder="Enter amount (use negative to reduce)"
+                      value={costToAdd === 0 ? "" : costToAdd}
+                      onChange={(e) =>
+                        setCostToAdd(Number.parseFloat(e.target.value) || 0)
+                      }
+                      disabled={loading}
+                      autoFocus
+                      className="text-2xl font-mono p-4 h-13 pl-8 border-2 border-primary/50 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                    />
+                  </div>
                   <p className="text-xs text-muted-foreground">
-                    Enter a positive number to add tokens or negative to reduce
+                    Enter a positive number to add budget or negative to reduce
                   </p>
                 </div>
 
@@ -199,29 +204,29 @@ export function EditQuotaDrawer({
                     Quick Add
                   </Label>
                   <div className="grid grid-cols-4 gap-2">
-                    {[1000, 5000, 10000, 50000].map((amount) => (
+                    {[10, 25, 50, 100].map((amount) => (
                       <Button
                         key={amount}
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => setTokensToAdd(tokensToAdd + amount)}
+                        onClick={() => setCostToAdd(costToAdd + amount)}
                         disabled={loading}
                         className="text-xs"
                       >
-                        +{amount >= 1000 ? `${amount / 1000}k` : amount}
+                        +${amount}
                       </Button>
                     ))}
                   </div>
                 </div>
 
                 {/* New Total Preview */}
-                {tokensToAdd !== 0 && (
+                {costToAdd !== 0 && (
                   <div className="rounded-lg border-2 p-4 bg-muted/50">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">New Total</span>
+                      <span className="text-sm font-medium">New Total Budget</span>
                       <div className="flex items-center gap-2">
-                        {tokensToAdd > 0 ? (
+                        {costToAdd > 0 ? (
                           <TrendingUp className="h-5 w-5 text-green-600" />
                         ) : (
                           <TrendingDown className="h-5 w-5 text-red-600" />
@@ -229,17 +234,17 @@ export function EditQuotaDrawer({
                       </div>
                     </div>
                     <p className="text-3xl font-bold font-mono">
-                      {newTotal.toLocaleString()}
+                      ${newTotal.toFixed(2)}
                     </p>
-                    {tokensToAdd > 0 ? (
+                    {costToAdd > 0 ? (
                       <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
                         <TrendingUp className="h-3 w-3" />
-                        Adding {tokensToAdd.toLocaleString()} tokens
+                        Adding ${costToAdd.toFixed(2)}
                       </p>
                     ) : (
                       <p className="text-xs text-red-600 mt-2 flex items-center gap-1">
                         <TrendingDown className="h-3 w-3" />
-                        Removing {Math.abs(tokensToAdd).toLocaleString()} tokens
+                        Removing ${Math.abs(costToAdd).toFixed(2)}
                       </p>
                     )}
                   </div>
@@ -252,7 +257,7 @@ export function EditQuotaDrawer({
             <Button
               type="submit"
               form="quota-form"
-              disabled={loading || tokensToAdd === 0}
+              disabled={loading || costToAdd === 0}
               className="w-full"
             >
               {loading ? "Updating..." : "Update Quota"}

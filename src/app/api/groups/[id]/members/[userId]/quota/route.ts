@@ -7,7 +7,7 @@ import { withAuthRequired } from "@/lib/auth-middleware";
 import { initializeDatabase } from "@/lib/db";
 
 const UpdateQuotaSchema = z.object({
-  tokens_remaining: z.number().min(0, "Tokens must be non-negative"),
+  total_cost: z.number().min(0, "Cost must be non-negative"),
 });
 
 // PATCH /api/groups/[id]/members/[userId]/quota - Update member quota
@@ -50,7 +50,7 @@ export const PATCH = withAuthRequired<any>(
         );
       }
 
-      const { tokens_remaining } = validationResult.data;
+      const { total_cost } = validationResult.data;
 
       const dataSource = await initializeDatabase();
       const groupRepository = dataSource.getRepository(Group);
@@ -82,14 +82,18 @@ export const PATCH = withAuthRequired<any>(
       });
 
       if (existingQuota) {
-        // Update existing quota and reset usage
-        existingQuota.tokens_remaining = tokens_remaining;
-        existingQuota.tokens_used = 0; // Reset usage when admin adjusts quota
+        // Update existing quota
+        existingQuota.total_cost = total_cost;
+        // Keep used_cost as-is (don't reset usage)
         await quotaRepository.save(existingQuota);
 
         return NextResponse.json({
           message: "Quota updated successfully",
-          quota: existingQuota,
+          quota: {
+            id: existingQuota.id,
+            total_cost: Number(existingQuota.total_cost),
+            used_cost: Number(existingQuota.used_cost),
+          },
         });
       }
 
@@ -97,8 +101,8 @@ export const PATCH = withAuthRequired<any>(
       const newQuota = quotaRepository.create({
         user_id: userId,
         group_id: groupId,
-        tokens_remaining,
-        tokens_used: 0,
+        total_cost,
+        used_cost: 0,
         id: Date.now(),
       });
 
@@ -107,7 +111,11 @@ export const PATCH = withAuthRequired<any>(
       return NextResponse.json(
         {
           message: "Quota created successfully",
-          quota: newQuota,
+          quota: {
+            id: newQuota.id,
+            total_cost: Number(newQuota.total_cost),
+            used_cost: Number(newQuota.used_cost),
+          },
         },
         { status: 201 },
       );
