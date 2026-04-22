@@ -34,9 +34,7 @@ export const GET = withAuthRequired(async (_request: NextRequest) => {
     const errorRateResult = await clickhouseClient.query<{
       error_rate: string;
     }>(TelemetryQueries.stats.errorRate);
-    const error_rate = Number.parseFloat(
-      errorRateResult[0]?.error_rate || "0",
-    );
+    const error_rate = Number.parseFloat(errorRateResult[0]?.error_rate || "0");
 
     // Requests per minute
     const rpmResult = await clickhouseClient.query<{ rpm: string }>(

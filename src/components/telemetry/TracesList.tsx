@@ -1,4 +1,6 @@
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -7,8 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   formatDurationMs,
   formatRelativeTime,
@@ -30,7 +30,10 @@ export function TracesList({ traces, loading }: TracesListProps) {
     return (
       <div className="space-y-3">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex items-center gap-4 p-4 border rounded-lg">
+          <div
+            key={i}
+            className="flex items-center gap-4 p-4 border rounded-lg"
+          >
             <Skeleton className="h-4 w-32" />
             <Skeleton className="h-4 w-48 flex-1" />
             <Skeleton className="h-4 w-20" />
@@ -100,7 +103,9 @@ export function TracesList({ traces, loading }: TracesListProps) {
               </TableCell>
               <TableCell>
                 <Badge
-                  variant={trace.status === "ERROR" ? "destructive" : "secondary"}
+                  variant={
+                    trace.status === "ERROR" ? "destructive" : "secondary"
+                  }
                   className="gap-1"
                 >
                   <div

@@ -1,6 +1,17 @@
 "use client";
 
+import { Coins, MoreVertical, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -9,19 +20,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Search, MoreVertical, Trash2, Coins } from "lucide-react";
 import type { GroupMember } from "@/types/group";
 import { EditQuotaDrawer } from "./EditQuotaDrawer";
-import toast from "react-hot-toast";
 
 interface MembersTableProps {
   members: GroupMember[];
@@ -161,7 +161,7 @@ export function MembersTable({
                   <TableCell className="text-right font-mono">
                     {member.quota?.total_cost !== undefined ? (
                       <span className="font-semibold text-lg">
-                        ${Number(member.quota.total_cost).toFixed(2)}
+                        ${member.quota.total_cost}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">-</span>
@@ -171,27 +171,32 @@ export function MembersTable({
                     {member.quota?.used_cost !== undefined ? (
                       <span
                         className={
-                          Number(member.quota.used_cost) >= Number(member.quota.total_cost)
+                          member.quota.used_cost >= member.quota.total_cost
                             ? "text-red-600 font-semibold"
                             : ""
                         }
                       >
-                        ${Number(member.quota.used_cost).toFixed(4)}
+                        ${member.quota.used_cost}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">-</span>
                     )}
                   </TableCell>
                   <TableCell className="text-right font-mono">
-                    {member.quota?.total_cost !== undefined && member.quota?.used_cost !== undefined ? (
+                    {member.quota?.total_cost !== undefined &&
+                    member.quota?.used_cost !== undefined ? (
                       <span
                         className={
-                          (Number(member.quota.total_cost) - Number(member.quota.used_cost)) < 1
+                          member.quota.total_cost - member.quota.used_cost < 1
                             ? "text-red-600 font-semibold"
                             : "text-green-600"
                         }
                       >
-                        ${Math.max(0, Number(member.quota.total_cost) - Number(member.quota.used_cost)).toFixed(2)}
+                        $
+                        {Math.max(
+                          0,
+                          member.quota.total_cost - member.quota.used_cost,
+                        )}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">-</span>

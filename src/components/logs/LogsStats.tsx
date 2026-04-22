@@ -1,11 +1,6 @@
 import { Activity, AlertTriangle, FileText, TrendingUp } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLogSeverityColor } from "@/lib/telemetry";
 import type { LogsStats as Stats } from "@/types/telemetry";
 

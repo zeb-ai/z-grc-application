@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react";
 import { Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -7,9 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import type { MetricInfo, MetricType } from "@/types/telemetry";
 
 interface MetricSelectorProps {
@@ -57,7 +57,10 @@ export function MetricSelector({
         {/* Metric Selector */}
         <div className="space-y-2">
           <Label>Metric</Label>
-          <Select value={selectedMetric || ""} onValueChange={handleMetricSelect}>
+          <Select
+            value={selectedMetric || ""}
+            onValueChange={handleMetricSelect}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select a metric..." />
             </SelectTrigger>

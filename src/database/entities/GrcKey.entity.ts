@@ -1,3 +1,4 @@
+import type { ObjectId } from "mongodb";
 import {
   BeforeInsert,
   Column,
@@ -5,7 +6,6 @@ import {
   Entity,
   ObjectIdColumn,
 } from "typeorm";
-import type { ObjectId } from "mongodb";
 import { v7 as uuidv7 } from "uuid";
 
 @Entity("grc_keys")

@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { LogsStats } from "@/components/logs/LogsStats";
 import { LogsFilters } from "@/components/logs/LogsFilters";
+import { LogsStats } from "@/components/logs/LogsStats";
 import { LogsTable } from "@/components/logs/LogsTable";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,12 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import type {
-  LogsStats as Stats,
-  LogFilters,
-  Log,
-} from "@/types/telemetry";
+import type { Log, LogFilters, LogsStats as Stats } from "@/types/telemetry";
 
 export default function LogsPage() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -51,7 +47,9 @@ export default function LogsPage() {
       if (res.ok) {
         setStats(data);
         // Extract unique services
-        const serviceNames = data.top_services.map((s: { name: string }) => s.name);
+        const serviceNames = data.top_services.map(
+          (s: { name: string }) => s.name,
+        );
         setServices(serviceNames);
       } else {
         toast.error(data.error || "Failed to fetch stats");

@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { Group } from "@/database/entities/Group.entity";
 import { PendingInvitation } from "@/database/entities/PendingInvitation.entity";
+import { Quota } from "@/database/entities/Quota.entity";
 import { User } from "@/database/entities/User.entity";
 import { UserGroup } from "@/database/entities/UserGroup.entity";
-import { Quota } from "@/database/entities/Quota.entity";
-import { Group } from "@/database/entities/Group.entity";
 import { generateToken, hashPassword } from "@/lib/auth";
 import { initializeDatabase } from "@/lib/db";
 

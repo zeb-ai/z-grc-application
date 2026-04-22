@@ -7,7 +7,9 @@ import { initializeDatabase } from "@/lib/db";
 
 const CreateGroupSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters").max(255),
-  default_cost_limit: z.number().min(0, "Default cost limit must be non-negative"),
+  default_cost_limit: z
+    .number()
+    .min(0, "Default cost limit must be non-negative"),
 });
 
 // GET /api/groups - List all groups

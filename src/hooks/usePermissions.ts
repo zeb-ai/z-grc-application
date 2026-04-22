@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Permission, GroupRole } from "@/types/rbac";
+import type { GroupRole, Permission } from "@/types/rbac";
 
 interface PermissionContext {
   role: GroupRole | null;

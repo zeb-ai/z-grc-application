@@ -38,9 +38,7 @@ export function formatDurationMs(ms: number): string {
 /**
  * Parse OpenTelemetry status code to simple status
  */
-export function parseStatus(
-  statusCode: string,
-): "SUCCESS" | "ERROR" | "UNSET" {
+export function parseStatus(statusCode: string): "SUCCESS" | "ERROR" | "UNSET" {
   if (statusCode === "STATUS_CODE_ERROR") {
     return "ERROR";
   }
@@ -53,9 +51,7 @@ export function parseStatus(
 /**
  * Get status badge color
  */
-export function getStatusColor(
-  status: "SUCCESS" | "ERROR" | "UNSET",
-): string {
+export function getStatusColor(status: "SUCCESS" | "ERROR" | "UNSET"): string {
   switch (status) {
     case "SUCCESS":
       return "bg-green-500";
@@ -186,9 +182,7 @@ import type { LogSeverity } from "@/types/telemetry";
 /**
  * Get log severity color for badge
  */
-export function getLogSeverityColor(
-  severity: LogSeverity,
-): string {
+export function getLogSeverityColor(severity: LogSeverity): string {
   switch (severity) {
     case "FATAL":
       return "bg-red-600";
@@ -210,9 +204,7 @@ export function getLogSeverityColor(
 /**
  * Get log severity text color
  */
-export function getLogSeverityTextColor(
-  severity: LogSeverity,
-): string {
+export function getLogSeverityTextColor(severity: LogSeverity): string {
   switch (severity) {
     case "FATAL":
     case "ERROR":

@@ -58,7 +58,11 @@ export function LogsFilters({
               placeholder="Search log body..."
               value={filters.search || ""}
               onChange={(e) =>
-                onFiltersChange({ ...filters, search: e.target.value, offset: 0 })
+                onFiltersChange({
+                  ...filters,
+                  search: e.target.value,
+                  offset: 0,
+                })
               }
               className="pl-9"
             />

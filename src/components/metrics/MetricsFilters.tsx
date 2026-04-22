@@ -22,9 +22,7 @@ export function MetricsFilters({
   services = [],
 }: MetricsFiltersProps) {
   const hasActiveFilters =
-    filters.user_id ||
-    filters.group_id ||
-    filters.service;
+    filters.user_id || filters.group_id || filters.service;
 
   const clearFilters = () => {
     onFiltersChange({

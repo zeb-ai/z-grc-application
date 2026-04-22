@@ -2,7 +2,11 @@ import { type NextRequest, NextResponse } from "next/server";
 import { clickhouseClient } from "@/clickhouse/client";
 import { withAuthRequired } from "@/lib/auth-middleware";
 import { TelemetryQueries } from "@/lib/telemetry-queries";
-import type { MetricInfo, MetricsListResponse, MetricType } from "@/types/telemetry";
+import type {
+  MetricInfo,
+  MetricsListResponse,
+  MetricType,
+} from "@/types/telemetry";
 
 /**
  * GET /api/metrics/list

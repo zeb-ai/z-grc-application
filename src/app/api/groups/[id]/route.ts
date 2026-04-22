@@ -213,7 +213,8 @@ export const PUT = withAuthRequired<any>(
       // Update group
       const { name, default_cost_limit } = validationResult.data;
       if (name !== undefined) group.name = name;
-      if (default_cost_limit !== undefined) group.default_cost_limit = default_cost_limit;
+      if (default_cost_limit !== undefined)
+        group.default_cost_limit = default_cost_limit;
 
       await groupRepository.save(group);
 

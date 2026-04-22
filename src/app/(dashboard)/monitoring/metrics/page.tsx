@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { MetricsStats } from "@/components/metrics/MetricsStats";
+import { MetricChart } from "@/components/metrics/MetricChart";
 import { MetricSelector } from "@/components/metrics/MetricSelector";
 import { MetricsFilters } from "@/components/metrics/MetricsFilters";
-import { MetricChart } from "@/components/metrics/MetricChart";
+import { MetricsStats } from "@/components/metrics/MetricsStats";
 import {
   Card,
   CardContent,
@@ -14,12 +14,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type {
-  MetricsStats as Stats,
-  MetricInfo,
-  MetricDataPoint,
   HistogramDataPoint,
-  MetricType,
+  MetricDataPoint,
   MetricFilters,
+  MetricInfo,
+  MetricType,
+  MetricsStats as Stats,
 } from "@/types/telemetry";
 
 export default function MetricsPage() {
@@ -47,7 +47,14 @@ export default function MetricsPage() {
       fetchMetricData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMetric, selectedType, timeRange, filters.user_id, filters.group_id, filters.service]);
+  }, [
+    selectedMetric,
+    selectedType,
+    timeRange,
+    filters.user_id,
+    filters.group_id,
+    filters.service,
+  ]);
 
   const fetchStats = async () => {
     try {
@@ -119,7 +126,9 @@ export default function MetricsPage() {
             from = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
             break;
           case "7d":
-            from = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+            from = new Date(
+              now.getTime() - 7 * 24 * 60 * 60 * 1000,
+            ).toISOString();
             break;
           case "30d":
             from = new Date(
@@ -226,7 +235,9 @@ export default function MetricsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <div className="text-center">
-              <h3 className="text-lg font-semibold mb-2">No Metrics Available</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No Metrics Available
+              </h3>
               <p className="text-sm text-muted-foreground">
                 Start sending metrics data to see visualizations here
               </p>

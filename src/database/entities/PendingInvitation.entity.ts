@@ -1,9 +1,9 @@
 import {
-  Entity,
+  BeforeInsert,
   Column,
   CreateDateColumn,
+  Entity,
   ObjectIdColumn,
-  BeforeInsert,
 } from "typeorm";
 
 @Entity("pending_invitations")

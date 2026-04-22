@@ -1,19 +1,14 @@
 "use client";
 
-import { ArrowLeft, Activity, Clock, Layers } from "lucide-react";
+import { Activity, ArrowLeft, Clock, Layers } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { TraceWaterfall } from "@/components/telemetry/TraceWaterfall";
 import { SpanDetails } from "@/components/telemetry/SpanDetails";
-import { Button } from "@/components/ui/button";
+import { TraceWaterfall } from "@/components/telemetry/TraceWaterfall";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   formatDurationMs,
@@ -21,7 +16,7 @@ import {
   getStatusTextColor,
   shortenId,
 } from "@/lib/telemetry";
-import type { TraceDetail, Span } from "@/types/telemetry";
+import type { Span, TraceDetail } from "@/types/telemetry";
 
 export default function TraceDetailPage() {
   const params = useParams();

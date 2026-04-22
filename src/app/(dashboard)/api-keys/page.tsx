@@ -2,6 +2,8 @@
 
 import { Key, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { CreateKeyDrawer } from "@/components/grc-keys/CreateKeyDrawer";
+import { KeysTableSkeleton } from "@/components/grc-keys/KeysTableSkeleton";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,8 +27,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CreateKeyDrawer } from "@/components/grc-keys/CreateKeyDrawer";
-import { KeysTableSkeleton } from "@/components/grc-keys/KeysTableSkeleton";
 import type { GrcKey } from "@/database/entities/GrcKey.entity";
 
 interface Group {

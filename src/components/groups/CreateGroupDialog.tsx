@@ -93,7 +93,9 @@ export function CreateGroupDialog({ onGroupCreated }: CreateGroupDialogProps) {
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="default_cost_limit">Default Cost Limit (USD)</Label>
+              <Label htmlFor="default_cost_limit">
+                Default Cost Limit (USD)
+              </Label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                   $
@@ -107,7 +109,8 @@ export function CreateGroupDialog({ onGroupCreated }: CreateGroupDialogProps) {
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      default_cost_limit: Number.parseFloat(e.target.value) || 0,
+                      default_cost_limit:
+                        Number.parseFloat(e.target.value) || 0,
                     })
                   }
                   required

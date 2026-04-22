@@ -150,7 +150,7 @@ export default function UserGroupsPage() {
                             <span>Default Cost Limit</span>
                           </div>
                           <Badge variant="outline">
-                            ${Number(group.default_cost_limit).toFixed(2)}
+                            ${group.default_cost_limit}
                           </Badge>
                         </div>
                         <div className="pt-2 border-t">

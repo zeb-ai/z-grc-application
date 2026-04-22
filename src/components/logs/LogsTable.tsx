@@ -1,6 +1,8 @@
-import { useState } from "react";
 import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -9,8 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   formatRelativeTime,
   getLogSeverityVariant,
@@ -42,7 +42,10 @@ export function LogsTable({ logs, loading }: LogsTableProps) {
     return (
       <div className="space-y-3">
         {[...Array(10)].map((_, i) => (
-          <div key={i} className="flex items-center gap-4 p-4 border rounded-lg">
+          <div
+            key={i}
+            className="flex items-center gap-4 p-4 border rounded-lg"
+          >
             <Skeleton className="h-4 w-16" />
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-4 flex-1" />

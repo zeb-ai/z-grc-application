@@ -1,10 +1,5 @@
 import { Activity, BarChart3, Clock, TrendingUp } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDurationMs } from "@/lib/telemetry";
 import type { TelemetryStats as Stats } from "@/types/telemetry";
 

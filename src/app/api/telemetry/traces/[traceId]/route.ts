@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { clickhouseClient } from "@/clickhouse/client";
 import { withAuthRequired } from "@/lib/auth-middleware";
-import { QueryBuilder, TelemetryQueries } from "@/lib/telemetry-queries";
 import { parseStatus } from "@/lib/telemetry";
+import { QueryBuilder, TelemetryQueries } from "@/lib/telemetry-queries";
 import type { Span, SpanEvent, SpanLink, TraceDetail } from "@/types/telemetry";
 
 /**
@@ -54,10 +54,7 @@ export const GET = withAuthRequired(
       const spansResult = await clickhouseClient.query<SpanRow>(detailQuery);
 
       if (spansResult.length === 0) {
-        return NextResponse.json(
-          { error: "Trace not found" },
-          { status: 404 },
-        );
+        return NextResponse.json({ error: "Trace not found" }, { status: 404 });
       }
 
       // Transform spans
@@ -91,7 +88,9 @@ export const GET = withAuthRequired(
         const start_time = row.timestamp;
         const duration_ns = Number.parseFloat(row.duration_ms) * 1_000_000;
         const start_date = new Date(start_time);
-        const end_date = new Date(start_date.getTime() + duration_ns / 1_000_000);
+        const end_date = new Date(
+          start_date.getTime() + duration_ns / 1_000_000,
+        );
 
         return {
           span_id: row.span_id,

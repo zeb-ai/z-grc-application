@@ -48,7 +48,11 @@ export function TelemetryFilters({
               placeholder="User ID..."
               value={filters.user_id || ""}
               onChange={(e) =>
-                onFiltersChange({ ...filters, user_id: e.target.value, offset: 0 })
+                onFiltersChange({
+                  ...filters,
+                  user_id: e.target.value,
+                  offset: 0,
+                })
               }
               className="pl-9"
             />
@@ -62,7 +66,11 @@ export function TelemetryFilters({
             placeholder="Group ID..."
             value={filters.group_id || ""}
             onChange={(e) =>
-              onFiltersChange({ ...filters, group_id: e.target.value, offset: 0 })
+              onFiltersChange({
+                ...filters,
+                group_id: e.target.value,
+                offset: 0,
+              })
             }
           />
         </div>

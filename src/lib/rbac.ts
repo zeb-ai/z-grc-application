@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
-import type { RBACConfig, Permission, GroupRole } from "@/types/rbac";
-import { initializeDatabase } from "./db";
 import { User } from "@/database/entities/User.entity";
 import { UserGroup } from "@/database/entities/UserGroup.entity";
+import type { GroupRole, Permission, RBACConfig } from "@/types/rbac";
+import { initializeDatabase } from "./db";
 
 // Cache for RBAC config
 let cachedConfig: RBACConfig | null = null;

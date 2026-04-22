@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { clickhouseClient } from "@/clickhouse/client";
 import { withAuthRequired } from "@/lib/auth-middleware";
 import { TelemetryQueries } from "@/lib/telemetry-queries";
-import type { LogsStats, LogSeverity } from "@/types/telemetry";
+import type { LogSeverity, LogsStats } from "@/types/telemetry";
 
 /**
  * GET /api/logs/stats
@@ -46,9 +46,7 @@ export const GET = withAuthRequired(async (_request: NextRequest) => {
     const errorRateResult = await clickhouseClient.query<{
       error_rate: string;
     }>(TelemetryQueries.logs.stats.errorRate);
-    const error_rate = Number.parseFloat(
-      errorRateResult[0]?.error_rate || "0",
-    );
+    const error_rate = Number.parseFloat(errorRateResult[0]?.error_rate || "0");
 
     const stats: LogsStats = {
       total_logs,

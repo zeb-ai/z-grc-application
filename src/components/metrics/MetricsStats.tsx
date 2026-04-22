@@ -1,11 +1,6 @@
 import { Activity, BarChart3, Database, TrendingUp } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { MetricsStats as Stats } from "@/types/telemetry";
 
 interface MetricsStatsProps {
@@ -97,7 +92,11 @@ export function MetricsStats({ stats, loading }: MetricsStatsProps) {
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {stats.by_type.map((item) => (
-                <Badge key={item.type} variant="outline" className="gap-2 px-3 py-1">
+                <Badge
+                  key={item.type}
+                  variant="outline"
+                  className="gap-2 px-3 py-1"
+                >
                   <span className="font-medium capitalize">{item.type}</span>
                   <span className="text-muted-foreground">
                     {item.count.toLocaleString()}

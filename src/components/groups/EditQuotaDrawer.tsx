@@ -1,6 +1,17 @@
 "use client";
 
+import {
+  Activity,
+  DollarSign,
+  Mail,
+  TrendingDown,
+  TrendingUp,
+  User,
+} from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -10,22 +21,11 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import toast from "react-hot-toast";
 import type { GroupMember } from "@/types/group";
-import {
-  DollarSign,
-  TrendingUp,
-  TrendingDown,
-  User,
-  Mail,
-  Activity,
-} from "lucide-react";
 
 interface EditQuotaDrawerProps {
   open: boolean;
@@ -45,8 +45,8 @@ export function EditQuotaDrawer({
   const [loading, setLoading] = useState(false);
   const [costToAdd, setCostToAdd] = useState(0);
 
-  const currentCost = Number(member.quota?.total_cost || 0);
-  const costUsed = Number(member.quota?.used_cost || 0);
+  const currentCost = member.quota?.total_cost || 0;
+  const costUsed = member.quota?.used_cost || 0;
   const newTotal = Math.max(0, currentCost + costToAdd);
   const usagePercentage =
     currentCost > 0 ? Math.round((costUsed / currentCost) * 100) : 0;
@@ -137,17 +137,15 @@ export function EditQuotaDrawer({
                   <Progress value={usagePercentage} className="h-3" />
                   <div className="grid grid-cols-2 gap-4 pt-2">
                     <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground">
-                        Cost Used
-                      </p>
+                      <p className="text-xs text-muted-foreground">Cost Used</p>
                       <p className="text-lg font-bold font-mono text-red-600">
-                        ${costUsed.toFixed(4)}
+                        ${costUsed}
                       </p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground">Remaining</p>
                       <p className="text-lg font-bold font-mono text-green-600">
-                        ${remainingCost.toFixed(2)}
+                        ${remainingCost}
                       </p>
                     </div>
                   </div>
@@ -160,9 +158,7 @@ export function EditQuotaDrawer({
                   <h3 className="font-semibold">Total Cost Budget</h3>
                 </div>
                 <div className="rounded-lg border p-4 bg-primary/5">
-                  <p className="text-3xl font-bold font-mono">
-                    ${currentCost.toFixed(2)}
-                  </p>
+                  <p className="text-3xl font-bold font-mono">${currentCost}</p>
                   <p className="text-xs text-muted-foreground mt-1">
                     Current budget limit
                   </p>
@@ -224,7 +220,9 @@ export function EditQuotaDrawer({
                 {costToAdd !== 0 && (
                   <div className="rounded-lg border-2 p-4 bg-muted/50">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">New Total Budget</span>
+                      <span className="text-sm font-medium">
+                        New Total Budget
+                      </span>
                       <div className="flex items-center gap-2">
                         {costToAdd > 0 ? (
                           <TrendingUp className="h-5 w-5 text-green-600" />
@@ -233,18 +231,16 @@ export function EditQuotaDrawer({
                         )}
                       </div>
                     </div>
-                    <p className="text-3xl font-bold font-mono">
-                      ${newTotal.toFixed(2)}
-                    </p>
+                    <p className="text-3xl font-bold font-mono">${newTotal}</p>
                     {costToAdd > 0 ? (
                       <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
                         <TrendingUp className="h-3 w-3" />
-                        Adding ${costToAdd.toFixed(2)}
+                        Adding ${costToAdd}
                       </p>
                     ) : (
                       <p className="text-xs text-red-600 mt-2 flex items-center gap-1">
                         <TrendingDown className="h-3 w-3" />
-                        Removing ${Math.abs(costToAdd).toFixed(2)}
+                        Removing ${Math.abs(costToAdd)}
                       </p>
                     )}
                   </div>

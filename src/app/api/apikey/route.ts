@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { GrcKey } from "@/database/entities/GrcKey.entity";
+import { type ApiKeyData, encode } from "@/lib/apikey";
 import { getCurrentUser } from "@/lib/auth";
 import { withAuthRequired } from "@/lib/auth-middleware";
-import { type ApiKeyData, encode } from "@/lib/apikey";
 import { initializeDatabase } from "@/lib/db";
 
 const CreateKeySchema = z.object({

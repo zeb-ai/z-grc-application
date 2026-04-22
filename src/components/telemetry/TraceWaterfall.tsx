@@ -1,9 +1,9 @@
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import { ChevronRight, ChevronDown } from "lucide-react";
 import {
+  calculateSpanDepth,
   formatDurationMs,
   getStatusColor,
-  calculateSpanDepth,
 } from "@/lib/telemetry";
 import type { Span } from "@/types/telemetry";
 
@@ -132,9 +132,7 @@ export function TraceWaterfall({
 
         {/* Render children */}
         {hasChildren && isExpanded && (
-          <div>
-            {children.map((child) => renderSpan(child, depth + 1))}
-          </div>
+          <div>{children.map((child) => renderSpan(child, depth + 1))}</div>
         )}
       </div>
     );

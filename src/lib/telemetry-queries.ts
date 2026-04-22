@@ -338,15 +338,11 @@ export class QueryBuilder {
     const conditions: string[] = [];
 
     if (filters.user_id) {
-      conditions.push(
-        `ResourceAttributes['user_id'] = '${filters.user_id}'`,
-      );
+      conditions.push(`ResourceAttributes['user_id'] = '${filters.user_id}'`);
     }
 
     if (filters.group_id) {
-      conditions.push(
-        `ResourceAttributes['group_id'] = '${filters.group_id}'`,
-      );
+      conditions.push(`ResourceAttributes['group_id'] = '${filters.group_id}'`);
     }
 
     if (filters.service) {
@@ -373,9 +369,7 @@ export class QueryBuilder {
       conditions.push(`Timestamp <= '${filters.to}'`);
     }
 
-    return conditions.length > 0
-      ? `AND ${conditions.join(" AND ")}`
-      : "";
+    return conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
   }
 
   /**
@@ -391,15 +385,11 @@ export class QueryBuilder {
     const conditions: string[] = [];
 
     if (filters.user_id) {
-      conditions.push(
-        `ResourceAttributes['user_id'] = '${filters.user_id}'`,
-      );
+      conditions.push(`ResourceAttributes['user_id'] = '${filters.user_id}'`);
     }
 
     if (filters.group_id) {
-      conditions.push(
-        `ResourceAttributes['group_id'] = '${filters.group_id}'`,
-      );
+      conditions.push(`ResourceAttributes['group_id'] = '${filters.group_id}'`);
     }
 
     if (filters.service) {
@@ -416,9 +406,7 @@ export class QueryBuilder {
       conditions.push(`TimeUnix <= parseDateTimeBestEffort('${filters.to}')`);
     }
 
-    return conditions.length > 0
-      ? `AND ${conditions.join(" AND ")}`
-      : "";
+    return conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
   }
 
   /**
@@ -436,15 +424,11 @@ export class QueryBuilder {
     const conditions: string[] = [];
 
     if (filters.user_id) {
-      conditions.push(
-        `ResourceAttributes['user_id'] = '${filters.user_id}'`,
-      );
+      conditions.push(`ResourceAttributes['user_id'] = '${filters.user_id}'`);
     }
 
     if (filters.group_id) {
-      conditions.push(
-        `ResourceAttributes['group_id'] = '${filters.group_id}'`,
-      );
+      conditions.push(`ResourceAttributes['group_id'] = '${filters.group_id}'`);
     }
 
     if (filters.service) {
@@ -467,9 +451,7 @@ export class QueryBuilder {
       conditions.push(`Timestamp <= '${filters.to}'`);
     }
 
-    return conditions.length > 0
-      ? `AND ${conditions.join(" AND ")}`
-      : "";
+    return conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
   }
 
   /**

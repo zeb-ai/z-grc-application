@@ -5,8 +5,7 @@ import {
   type ObjectId,
   ObjectIdColumn,
 } from "typeorm";
-import type { Group } from "@/database";
-import type { User } from "@/database";
+import type { Group, User } from "@/database";
 
 @Entity("quota")
 export class Quota {

@@ -1,21 +1,25 @@
+import { format } from "date-fns";
 import {
-  LineChart,
-  Line,
-  AreaChart,
   Area,
-  BarChart,
+  AreaChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
-import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { MetricDataPoint, HistogramDataPoint, MetricType } from "@/types/telemetry";
+import type {
+  HistogramDataPoint,
+  MetricDataPoint,
+  MetricType,
+} from "@/types/telemetry";
 
 interface MetricChartProps {
   metricName: string;
@@ -114,7 +118,7 @@ export function MetricChart({
   }));
 
   // Calculate statistics
-  const values = chartData.map(d => d.value);
+  const values = chartData.map((d) => d.value);
   const minValue = Math.min(...values);
   const maxValue = Math.max(...values);
   const avgValue = values.reduce((a, b) => a + b, 0) / values.length;
@@ -208,21 +212,15 @@ export function MetricChart({
           </div>
           <div>
             <div className="text-muted-foreground">Average</div>
-            <div className="font-semibold text-lg">
-              {avgValue.toFixed(2)}
-            </div>
+            <div className="font-semibold text-lg">{avgValue.toFixed(2)}</div>
           </div>
           <div>
             <div className="text-muted-foreground">Min</div>
-            <div className="font-semibold text-lg">
-              {minValue.toFixed(2)}
-            </div>
+            <div className="font-semibold text-lg">{minValue.toFixed(2)}</div>
           </div>
           <div>
             <div className="text-muted-foreground">Max</div>
-            <div className="font-semibold text-lg">
-              {maxValue.toFixed(2)}
-            </div>
+            <div className="font-semibold text-lg">{maxValue.toFixed(2)}</div>
           </div>
         </div>
       </CardContent>

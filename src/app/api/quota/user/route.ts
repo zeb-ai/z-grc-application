@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { Quota } from "@/database/entities/Quota.entity";
 import { Group } from "@/database/entities/Group.entity";
+import { Quota } from "@/database/entities/Quota.entity";
 import { initializeDatabase } from "@/lib/db";
 
 // GET /api/quota/user - Fetch current quota status for a user

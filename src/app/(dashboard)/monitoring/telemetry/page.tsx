@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { TelemetryStats } from "@/components/telemetry/TelemetryStats";
 import { TelemetryFilters } from "@/components/telemetry/TelemetryFilters";
+import { TelemetryStats } from "@/components/telemetry/TelemetryStats";
 import { TracesList } from "@/components/telemetry/TracesList";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,10 +13,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import type {
-  TelemetryStats as Stats,
   TelemetryFilters as Filters,
+  TelemetryStats as Stats,
   Trace,
 } from "@/types/telemetry";
 
@@ -51,7 +51,9 @@ export default function TelemetryPage() {
       if (res.ok) {
         setStats(data);
         // Extract unique services
-        const serviceNames = data.top_services.map((s: { name: string }) => s.name);
+        const serviceNames = data.top_services.map(
+          (s: { name: string }) => s.name,
+        );
         setServices(serviceNames);
       } else {
         toast.error(data.error || "Failed to fetch stats");

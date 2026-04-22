@@ -4,9 +4,9 @@ import {
   ArrowLeft,
   Calendar,
   Coins,
+  Shield,
   Trash2,
   Users,
-  Shield,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -14,8 +14,8 @@ import toast from "react-hot-toast";
 import { AddMemberDrawer } from "@/components/groups/AddMemberDrawer";
 import { MembersTable } from "@/components/groups/MembersTable";
 import { GroupDetailSkeleton } from "@/components/skeletons";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { usePermissions } from "@/hooks/usePermissions";
 import type { Group, GroupMember } from "@/types/group";
@@ -195,7 +195,9 @@ export default function UserGroupDetailPage() {
             <Coins className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${Number(group.default_cost_limit).toFixed(2)}</div>
+            <div className="text-2xl font-bold">
+              ${group.default_cost_limit}
+            </div>
             <p className="text-xs text-muted-foreground">Per member</p>
           </CardContent>
         </Card>

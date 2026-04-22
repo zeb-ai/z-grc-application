@@ -30,7 +30,9 @@ export function SpanDetails({ span }: SpanDetailsProps) {
           <CardTitle className="text-lg">{span.span_name}</CardTitle>
           <Badge
             variant={
-              span.status_code === "STATUS_CODE_ERROR" ? "destructive" : "secondary"
+              span.status_code === "STATUS_CODE_ERROR"
+                ? "destructive"
+                : "secondary"
             }
           >
             {span.status_code.replace("STATUS_CODE_", "")}
@@ -85,7 +87,9 @@ export function SpanDetails({ span }: SpanDetailsProps) {
                 )}
                 {httpInfo.url && (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground w-20">URL:</span>
+                    <span className="text-sm text-muted-foreground w-20">
+                      URL:
+                    </span>
                     <span className="text-sm font-mono break-all">
                       {httpInfo.url}
                     </span>
@@ -140,19 +144,23 @@ export function SpanDetails({ span }: SpanDetailsProps) {
           <>
             <Separator />
             <div>
-              <div className="text-sm font-medium mb-2">Resource Attributes</div>
+              <div className="text-sm font-medium mb-2">
+                Resource Attributes
+              </div>
               <div className="space-y-1 max-h-[200px] overflow-y-auto">
-                {Object.entries(span.resource_attributes).map(([key, value]) => (
-                  <div
-                    key={key}
-                    className="flex items-start gap-2 text-xs p-2 rounded bg-muted/30"
-                  >
-                    <span className="font-mono text-muted-foreground min-w-[120px]">
-                      {key}:
-                    </span>
-                    <span className="font-mono break-all">{value}</span>
-                  </div>
-                ))}
+                {Object.entries(span.resource_attributes).map(
+                  ([key, value]) => (
+                    <div
+                      key={key}
+                      className="flex items-start gap-2 text-xs p-2 rounded bg-muted/30"
+                    >
+                      <span className="font-mono text-muted-foreground min-w-[120px]">
+                        {key}:
+                      </span>
+                      <span className="font-mono break-all">{value}</span>
+                    </div>
+                  ),
+                )}
               </div>
             </div>
           </>

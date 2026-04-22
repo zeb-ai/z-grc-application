@@ -3,9 +3,9 @@
 import {
   BookOpenIcon,
   Home,
+  KeyRound,
   PieChartIcon,
   TerminalIcon,
-  KeyRound,
 } from "lucide-react";
 import Image from "next/image";
 import type * as React from "react";

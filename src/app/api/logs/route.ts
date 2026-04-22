@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { clickhouseClient } from "@/clickhouse/client";
 import { withAuthRequired } from "@/lib/auth-middleware";
 import { QueryBuilder, TelemetryQueries } from "@/lib/telemetry-queries";
-import type { Log, LogsResponse, LogSeverity } from "@/types/telemetry";
+import type { Log, LogSeverity, LogsResponse } from "@/types/telemetry";
 
 /**
  * GET /api/logs

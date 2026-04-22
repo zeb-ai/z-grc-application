@@ -3,8 +3,8 @@ import { clickhouseClient } from "@/clickhouse/client";
 import { withAuthRequired } from "@/lib/auth-middleware";
 import { QueryBuilder, TelemetryQueries } from "@/lib/telemetry-queries";
 import type {
-  MetricDataPoint,
   HistogramDataPoint,
+  MetricDataPoint,
   MetricDataResponse,
   MetricType,
 } from "@/types/telemetry";
