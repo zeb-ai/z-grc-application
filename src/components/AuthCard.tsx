@@ -96,7 +96,6 @@ export default function AuthCard({ onSuccess, onError }: AuthCardProps) {
             id="email"
             name="email"
             type="email"
-            value="samrat.damodaran@zeb.co" // TODO: Remove this
             placeholder="you@company.com"
             className="h-12 bg-black/40 border-cyan-500/30 focus:border-cyan-400 text-white placeholder:text-gray-500 transition-all focus:ring-2 focus:ring-cyan-400/20"
             required
@@ -114,7 +113,6 @@ export default function AuthCard({ onSuccess, onError }: AuthCardProps) {
             id="password"
             name="password"
             type="password"
-            value="samrat2003" // TODO: Remove this
             placeholder={
               isLogin ? "Enter your password" : "Minimum 8 characters"
             }
