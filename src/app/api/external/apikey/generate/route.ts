@@ -118,17 +118,16 @@ export const POST = withServiceAuth(async (request: NextRequest) => {
 
     if (!quota) {
       quota = quotaRepository.create({
-        id: Date.now(),
         user_id: user.user_id,
         group_id,
-        tokens_remaining: group.default_tokens,
-        tokens_used: 0,
+        total_cost: 0,
+        used_cost: 0,
       });
 
       try {
         await quotaRepository.save(quota);
         console.log(
-          `Created quota for user ${email} in group ${group_id}: ${group.default_tokens} tokens`,
+          `Created quota for user ${email} in group ${group_id}`,
         );
       } catch (saveError) {
         console.error("Failed to save Quota:", saveError);

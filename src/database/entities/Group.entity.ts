@@ -3,9 +3,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  type ObjectId,
-  ObjectIdColumn,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Quota } from "./Quota.entity";
 import type { User } from "./User.entity";
@@ -13,10 +12,7 @@ import { UserGroup } from "./UserGroup.entity";
 
 @Entity("group")
 export class Group {
-  @ObjectIdColumn()
-  _id: ObjectId;
-
-  @Column()
+  @PrimaryGeneratedColumn()
   group_id: number;
 
   @Column()
@@ -44,11 +40,4 @@ export class Group {
     (userGroup) => userGroup.group,
   )
   members: UserGroup[];
-
-  @BeforeInsert()
-  async generateGroupId() {
-    if (!this.group_id) {
-      this.group_id = Date.now(); // Simple auto-increment alternative
-    }
-  }
 }

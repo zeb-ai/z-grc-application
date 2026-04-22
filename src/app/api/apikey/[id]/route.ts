@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { GrcKey } from "@/database/entities/GrcKey.entity";
+import { UserGroup } from "@/database/entities/UserGroup.entity";
 import { getCurrentUser } from "@/lib/auth";
 import { withAuthRequired } from "@/lib/auth-middleware";
 import { initializeDatabase } from "@/lib/db";
@@ -20,23 +21,12 @@ export const DELETE = withAuthRequired<any>(
 
       const dataSource = await initializeDatabase();
       const grcKeyRepository = dataSource.getRepository(GrcKey);
-      const userGroupRepository = dataSource.getRepository("UserGroup");
+      const userGroupRepository = dataSource.getRepository(UserGroup);
 
-      // Find the key - try by id field first, then by _id if it's a valid ObjectId
-      let key = await grcKeyRepository.findOne({
+      // Find the key by id
+      const key = await grcKeyRepository.findOne({
         where: { id },
       });
-
-      // If not found and id looks like a MongoDB ObjectId, try that
-      if (!key && id.length === 24) {
-        try {
-          const { ObjectId } = await import("mongodb");
-          const allKeys = await grcKeyRepository.find();
-          key = allKeys.find((k) => k._id.toString() === id) || null;
-        } catch (e) {
-          // Not a valid ObjectId, continue
-        }
-      }
 
       if (!key) {
         console.error(`Key not found: ${id}`);

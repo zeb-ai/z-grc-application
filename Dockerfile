@@ -8,8 +8,8 @@ WORKDIR /app
 # Copy package files
 COPY package.json bun.lock* ./
 
-# Install dependencies
-RUN bun install --frozen-lockfile --production=false
+# Install dependencies (including devDependencies for build)
+RUN bun install --frozen-lockfile
 
 # ============================================
 # Stage 2: Builder
@@ -25,6 +25,10 @@ COPY . .
 # Set build-time environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+# Set minimal env vars to pass build validation
+ENV DB_TYPE=postgres
+ENV DB_NAME=governance
+ENV JWT_SECRET=build-time-placeholder-will-be-replaced-at-runtime
 
 # Build the Next.js application
 RUN bun run build

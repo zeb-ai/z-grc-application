@@ -2,18 +2,15 @@ import {
   BeforeInsert,
   Column,
   Entity,
-  type ObjectId,
-  ObjectIdColumn,
+  PrimaryColumn,
 } from "typeorm";
+import { v7 as uuidv7 } from "uuid";
 import type { Group, User } from "@/database";
 
 @Entity("quota")
 export class Quota {
-  @ObjectIdColumn()
-  _id: ObjectId;
-
-  @Column()
-  id: number;
+  @PrimaryColumn("varchar", { length: 36 })
+  id: string;
 
   @Column()
   user_id: string;
@@ -33,7 +30,7 @@ export class Quota {
   @BeforeInsert()
   async generateId() {
     if (!this.id) {
-      this.id = Date.now();
+      this.id = uuidv7();
     }
   }
 }

@@ -1,6 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { Group } from "@/database/entities/Group.entity";
+import { User } from "@/database/entities/User.entity";
+import { UserGroup } from "@/database/entities/UserGroup.entity";
+import { Quota } from "@/database/entities/Quota.entity";
 import { PendingInvitation } from "@/database/entities/PendingInvitation.entity";
 import { getCurrentUser } from "@/lib/auth";
 import { withAuthRequired } from "@/lib/auth-middleware";
@@ -30,9 +33,9 @@ export const GET = withAuthRequired<any>(
 
       const dataSource = await initializeDatabase();
       const groupRepository = dataSource.getRepository(Group);
-      const userRepository = dataSource.getRepository("User");
-      const userGroupRepository = dataSource.getRepository("UserGroup");
-      const quotaRepository = dataSource.getRepository("Quota");
+      const userRepository = dataSource.getRepository(User);
+      const userGroupRepository = dataSource.getRepository(UserGroup);
+      const quotaRepository = dataSource.getRepository(Quota);
       const pendingInvitationRepository =
         dataSource.getRepository(PendingInvitation);
 

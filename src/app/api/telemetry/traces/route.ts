@@ -8,7 +8,7 @@ import type { Trace, TracesResponse } from "@/types/telemetry";
  * GET /api/telemetry/traces
  * List traces with filtering and pagination
  */
-export const GET = withAuthRequired(async (request: NextRequest) => {
+export const GET = withAuthRequired(async (request: NextRequest, _context) => {
   try {
     const { searchParams } = new URL(request.url);
 

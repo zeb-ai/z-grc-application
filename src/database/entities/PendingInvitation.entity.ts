@@ -1,17 +1,13 @@
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
-  ObjectIdColumn,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 
 @Entity("pending_invitations")
 export class PendingInvitation {
-  @ObjectIdColumn()
-  _id!: string;
-
-  @Column({ unique: true })
+  @PrimaryGeneratedColumn()
   id!: number;
 
   @Column()
@@ -20,23 +16,16 @@ export class PendingInvitation {
   @Column()
   group_id!: number;
 
-  @Column({ type: "enum", enum: ["admin", "member"] })
+  @Column({ type: "varchar", length: 20 })
   role!: "admin" | "member";
 
   @Column({
-    type: "enum",
-    enum: ["pending", "accepted", "cancelled"],
+    type: "varchar",
+    length: 20,
     default: "pending",
   })
   status!: "pending" | "accepted" | "cancelled";
 
   @CreateDateColumn()
   created_at!: Date;
-
-  @BeforeInsert()
-  generateId() {
-    if (!this.id) {
-      this.id = Date.now();
-    }
-  }
 }

@@ -4,7 +4,7 @@ import { withAuthRequired } from "@/lib/auth-middleware";
 import { initializeDatabase } from "@/lib/db";
 
 // GET /api/users/search?q=email - Search users by email
-export const GET = withAuthRequired<any>(async (request: NextRequest) => {
+export const GET = withAuthRequired<any>(async (request: NextRequest, _context) => {
   try {
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get("q") || "";

@@ -8,7 +8,7 @@ import type { MetricsStats, MetricType } from "@/types/telemetry";
  * GET /api/metrics/stats
  * Get metrics overview statistics
  */
-export const GET = withAuthRequired(async (_request: NextRequest) => {
+export const GET = withAuthRequired(async (_request: NextRequest, _context) => {
   try {
     // Count by type
     const gaugesResult = await clickhouseClient.query<{ count: string }>(

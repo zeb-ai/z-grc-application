@@ -25,8 +25,8 @@ export class ClickHouseClient {
     if (!this.client) {
       this.client = createClient({
         url: clickhouseConfig.CLICKHOUSE_HOST!,
-        username: clickhouseConfig.CLICKHOUSE_USER,
-        password: clickhouseConfig.CLICKHOUSE_PASSWORD,
+        username: clickhouseConfig.CLICKHOUSE_USER || "default",
+        password: clickhouseConfig.CLICKHOUSE_PASSWORD || "",
         database: clickhouseConfig.CLICKHOUSE_DATABASE,
       });
     }

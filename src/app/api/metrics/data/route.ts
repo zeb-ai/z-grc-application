@@ -13,7 +13,7 @@ import type {
  * GET /api/metrics/data
  * Get metric time-series data
  */
-export const GET = withAuthRequired(async (request: NextRequest) => {
+export const GET = withAuthRequired(async (request: NextRequest, _context) => {
   try {
     const { searchParams } = new URL(request.url);
 

@@ -1,19 +1,15 @@
-import type { ObjectId } from "mongodb";
 import {
   BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
-  ObjectIdColumn,
+  PrimaryColumn,
 } from "typeorm";
 import { v7 as uuidv7 } from "uuid";
 
 @Entity("grc_keys")
 export class GrcKey {
-  @ObjectIdColumn()
-  _id!: ObjectId;
-
-  @Column()
+  @PrimaryColumn("varchar", { length: 36 })
   id!: string; // UUID v7
 
   @Column()

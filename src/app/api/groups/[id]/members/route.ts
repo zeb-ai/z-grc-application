@@ -102,7 +102,6 @@ export const POST = withAuthRequired<any>(
           group_id: groupId,
           role,
           status: "pending",
-          id: Date.now(),
         });
 
         await pendingInvitationRepository.save(invitation);
@@ -143,14 +142,12 @@ export const POST = withAuthRequired<any>(
         user_id: user.user_id,
         group_id: groupId,
         role,
-        id: Date.now(),
       });
 
       await userGroupRepository.save(userGroup);
 
       // Create quota for the new member
       const quota = quotaRepository.create({
-        id: Date.now(),
         user_id: user.user_id,
         group_id: groupId,
         total_cost: group.default_cost_limit,

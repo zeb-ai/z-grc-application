@@ -1,10 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { authContext, verifyToken } from "@/lib/auth";
 
-export function withAuth<T>(
-  handler: (request: NextRequest, context?: any) => Promise<NextResponse<T>>,
-): (request: NextRequest, context?: any) => Promise<NextResponse<T>> {
-  return async (request: NextRequest, context?: any) => {
+type RouteContext<P = any> = {
+  params: Promise<P>;
+};
+
+export function withAuth<T = any, P = any>(
+  handler: (request: NextRequest, context: RouteContext<P>) => Promise<NextResponse<any>>,
+): (request: NextRequest, context: RouteContext<P>) => Promise<NextResponse<any>> {
+  return async (request: NextRequest, context: RouteContext<P>) => {
     // Extract token from cookie
     const token = request.cookies.get("auth_token")?.value;
 
@@ -18,17 +22,17 @@ export function withAuth<T>(
   };
 }
 
-export function withAuthRequired<T>(
-  handler: (request: NextRequest, context?: any) => Promise<NextResponse<T>>,
-): (request: NextRequest, context?: any) => Promise<NextResponse<T>> {
-  return withAuth(async (request: NextRequest, context?: any) => {
+export function withAuthRequired<T = any, P = any>(
+  handler: (request: NextRequest, context: RouteContext<P>) => Promise<NextResponse<any>>,
+): (request: NextRequest, context: RouteContext<P>) => Promise<NextResponse<any>> {
+  return withAuth<T, P>(async (request: NextRequest, context: RouteContext<P>) => {
     const user = authContext.getStore();
 
     if (!user) {
       return NextResponse.json(
         { error: "Unauthorized", message: "Authentication required" },
         { status: 401 },
-      ) as NextResponse<T>;
+      );
     }
 
     return handler(request, context);

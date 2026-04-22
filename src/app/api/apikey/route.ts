@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { GrcKey } from "@/database/entities/GrcKey.entity";
+import { Group } from "@/database/entities/Group.entity";
+import { UserGroup } from "@/database/entities/UserGroup.entity";
 import { type ApiKeyData, encode } from "@/lib/apikey";
 import { getCurrentUser } from "@/lib/auth";
 import { withAuthRequired } from "@/lib/auth-middleware";
@@ -15,7 +17,7 @@ const CreateKeySchema = z.object({
 });
 
 // GET /api/apikey - List all GRC keys for user's groups
-export const GET = withAuthRequired<any>(async (request: NextRequest) => {
+export const GET = withAuthRequired<any>(async (request: NextRequest, _context) => {
   try {
     const user = getCurrentUser();
     if (!user) {
@@ -27,7 +29,7 @@ export const GET = withAuthRequired<any>(async (request: NextRequest) => {
 
     const dataSource = await initializeDatabase();
     const grcKeyRepository = dataSource.getRepository(GrcKey);
-    const userGroupRepository = dataSource.getRepository("UserGroup");
+    const userGroupRepository = dataSource.getRepository(UserGroup);
 
     // Get all groups user belongs to
     const userGroups = await userGroupRepository.find({
@@ -76,7 +78,7 @@ export const GET = withAuthRequired<any>(async (request: NextRequest) => {
 });
 
 // POST /api/apikey - Create new GRC key
-export const POST = withAuthRequired<any>(async (request: NextRequest) => {
+export const POST = withAuthRequired<any>(async (request: NextRequest, _context) => {
   try {
     const user = getCurrentUser();
     if (!user) {
@@ -101,7 +103,7 @@ export const POST = withAuthRequired<any>(async (request: NextRequest) => {
 
     const dataSource = await initializeDatabase();
     const grcKeyRepository = dataSource.getRepository(GrcKey);
-    const userGroupRepository = dataSource.getRepository("UserGroup");
+    const userGroupRepository = dataSource.getRepository(UserGroup);
 
     // Verify user is member of the group
     const membership = await userGroupRepository.findOne({

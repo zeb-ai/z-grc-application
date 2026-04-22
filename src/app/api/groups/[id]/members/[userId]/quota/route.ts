@@ -103,7 +103,6 @@ export const PATCH = withAuthRequired<any>(
         group_id: groupId,
         total_cost,
         used_cost: 0,
-        id: Date.now(),
       });
 
       await quotaRepository.save(newQuota);

@@ -1,20 +1,15 @@
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
-  type ObjectId,
-  ObjectIdColumn,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import type { Group } from "./Group.entity";
 import type { User } from "./User.entity";
 
 @Entity("user_group")
 export class UserGroup {
-  @ObjectIdColumn()
-  _id: ObjectId;
-
-  @Column()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
@@ -23,7 +18,7 @@ export class UserGroup {
   @Column()
   group_id: number;
 
-  @Column({ type: "enum", enum: ["admin", "member"] })
+  @Column({ type: "varchar", length: 20 })
   role: "admin" | "member";
 
   @CreateDateColumn()
@@ -31,11 +26,4 @@ export class UserGroup {
 
   user?: User;
   group?: Group;
-
-  @BeforeInsert()
-  async generateId() {
-    if (!this.id) {
-      this.id = Date.now();
-    }
-  }
 }

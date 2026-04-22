@@ -1,6 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { Group } from "@/database/entities/Group.entity";
+import { User } from "@/database/entities/User.entity";
+import { UserGroup } from "@/database/entities/UserGroup.entity";
+import { Quota } from "@/database/entities/Quota.entity";
 import { getCurrentUser } from "@/lib/auth";
 import { withAuthRequired } from "@/lib/auth-middleware";
 import { initializeDatabase } from "@/lib/db";
@@ -13,7 +16,7 @@ const CreateGroupSchema = z.object({
 });
 
 // GET /api/groups - List all groups
-export const GET = withAuthRequired<any>(async (request: NextRequest) => {
+export const GET = withAuthRequired<any>(async (request: NextRequest, _context) => {
   try {
     const user = getCurrentUser();
     const { searchParams } = new URL(request.url);
@@ -22,8 +25,8 @@ export const GET = withAuthRequired<any>(async (request: NextRequest) => {
 
     const dataSource = await initializeDatabase();
     const groupRepository = dataSource.getRepository(Group);
-    const userRepository = dataSource.getRepository("User");
-    const userGroupRepository = dataSource.getRepository("UserGroup");
+    const userRepository = dataSource.getRepository(User);
+    const userGroupRepository = dataSource.getRepository(UserGroup);
 
     let groups;
 
@@ -101,7 +104,7 @@ export const GET = withAuthRequired<any>(async (request: NextRequest) => {
 });
 
 // POST /api/groups - Create new group
-export const POST = withAuthRequired<any>(async (request: NextRequest) => {
+export const POST = withAuthRequired<any>(async (request: NextRequest, _context) => {
   try {
     const user = getCurrentUser();
     if (!user) {
@@ -125,8 +128,8 @@ export const POST = withAuthRequired<any>(async (request: NextRequest) => {
 
     const dataSource = await initializeDatabase();
     const groupRepository = dataSource.getRepository(Group);
-    const userGroupRepository = dataSource.getRepository("UserGroup");
-    const quotaRepository = dataSource.getRepository("Quota");
+    const userGroupRepository = dataSource.getRepository(UserGroup);
+    const quotaRepository = dataSource.getRepository(Quota);
 
     // Check if group name already exists for this user
     const existingGroup = await groupRepository.findOne({
@@ -143,30 +146,27 @@ export const POST = withAuthRequired<any>(async (request: NextRequest) => {
       );
     }
 
-    // Create new group
-    const groupId = Date.now();
+    // Create new group (group_id will be auto-generated)
     const group = groupRepository.create({
       name,
       default_cost_limit,
       created_by: user.user_id,
-      group_id: groupId,
     });
 
     await groupRepository.save(group);
+    const groupId = group.group_id; // Get the auto-generated ID
 
     // Automatically add creator as admin member
     const userGroup = userGroupRepository.create({
       user_id: user.user_id,
       group_id: groupId,
       role: "admin",
-      id: Date.now() + 1, // Ensure unique ID
     });
 
     await userGroupRepository.save(userGroup);
 
     // Create quota for creator
     const quota = quotaRepository.create({
-      id: Date.now() + 2,
       user_id: user.user_id,
       group_id: groupId,
       total_cost: default_cost_limit,

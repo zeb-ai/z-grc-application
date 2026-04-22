@@ -12,7 +12,7 @@ import type {
  * GET /api/metrics/list
  * List all available metrics
  */
-export const GET = withAuthRequired(async (_request: NextRequest) => {
+export const GET = withAuthRequired(async (_request: NextRequest, _context) => {
   try {
     const allMetrics: MetricInfo[] = [];
 

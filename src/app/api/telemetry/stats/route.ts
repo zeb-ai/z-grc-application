@@ -8,7 +8,7 @@ import type { TelemetryStats } from "@/types/telemetry";
  * GET /api/telemetry/stats
  * Get telemetry overview statistics
  */
-export const GET = withAuthRequired(async (_request: NextRequest) => {
+export const GET = withAuthRequired(async (_request: NextRequest, _context) => {
   try {
     // Total traces
     const totalTracesResult = await clickhouseClient.query<{ count: string }>(

@@ -8,7 +8,7 @@ import type { Log, LogSeverity, LogsResponse } from "@/types/telemetry";
  * GET /api/logs
  * List logs with filtering and pagination
  */
-export const GET = withAuthRequired(async (request: NextRequest) => {
+export const GET = withAuthRequired(async (request: NextRequest, _context) => {
   try {
     const { searchParams } = new URL(request.url);
 

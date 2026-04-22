@@ -3,9 +3,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  type ObjectId,
-  ObjectIdColumn,
   OneToMany,
+  PrimaryColumn,
 } from "typeorm";
 import { uuidv7 } from "uuidv7";
 import { Group } from "./Group.entity";
@@ -14,10 +13,7 @@ import { UserGroup } from "./UserGroup.entity";
 
 @Entity("user")
 export class User {
-  @ObjectIdColumn()
-  _id: ObjectId;
-
-  @Column()
+  @PrimaryColumn("varchar", { length: 36 })
   user_id: string;
 
   @Column({ type: "varchar", length: 255 })
