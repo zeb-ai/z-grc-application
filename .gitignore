@@ -31,8 +31,10 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
+.env
 .env.local
 .env.production
+.env.docker.local
 
 # vercel
 .vercel
@@ -41,4 +43,15 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# IDE
 .idea
+.vscode
+
+# Docker
+clickhouse_data
+logs
+*.log
+
+# Database
+*.db
+*.sqlite
