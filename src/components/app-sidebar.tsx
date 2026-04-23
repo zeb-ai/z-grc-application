@@ -81,12 +81,12 @@ const data = {
     },
     {
       title: "Governance Documentation",
-      url: "https://zeb-ai.github.io/z-grc/",
+      url: "https://zeb-ai.github.io/z-grc-application/",
       icon: <BookOpenIcon />,
     },
     {
       title: "Code Package Support",
-      url: "/support",
+      url: "https://github.com/zeb-ai/z-grc/issues",
       icon: <TerminalIcon />,
     },
   ],

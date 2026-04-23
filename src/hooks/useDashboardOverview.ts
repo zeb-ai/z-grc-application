@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { SystemHealth } from "@/types/dashboard";
-import { fetchSystemHealth } from "@/lib/api/home-dashboard";
+import type { DashboardStats } from "@/types/dashboard";
 
-export function useSystemHealth(refreshInterval: number = 30000) {
-  const [health, setHealth] = useState<SystemHealth | null>(null);
+export function useDashboardOverview(refreshInterval: number = 30000) {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -13,19 +12,24 @@ export function useSystemHealth(refreshInterval: number = 30000) {
     let isMounted = true;
     let intervalId: NodeJS.Timeout;
 
-    const loadHealth = async () => {
+    const loadStats = async () => {
       try {
         setLoading(true);
-        const data = await fetchSystemHealth();
+        const response = await fetch("/api/home/overview");
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
         if (isMounted) {
-          setHealth(data);
+          setStats(data);
           setError(null);
         }
       } catch (err) {
         if (isMounted) {
-          setError(
-            err instanceof Error ? err : new Error("Failed to fetch health"),
-          );
+          setError(err instanceof Error ? err : new Error("Failed to fetch stats"));
         }
       } finally {
         if (isMounted) {
@@ -34,10 +38,10 @@ export function useSystemHealth(refreshInterval: number = 30000) {
       }
     };
 
-    loadHealth();
+    loadStats();
 
     if (refreshInterval > 0) {
-      intervalId = setInterval(loadHealth, refreshInterval);
+      intervalId = setInterval(loadStats, refreshInterval);
     }
 
     return () => {
@@ -48,5 +52,5 @@ export function useSystemHealth(refreshInterval: number = 30000) {
     };
   }, [refreshInterval]);
 
-  return { health, loading, error, refresh: fetchSystemHealth };
+  return { stats, loading, error };
 }

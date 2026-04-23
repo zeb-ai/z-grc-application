@@ -1,48 +1,59 @@
+# Make sure to update the credential placeholders with your own secrets.
+# We mark them with # CHANGEME in the file below.
+# Internal services are bound to 127.0.0.1 to only accept connections from the local machine.
+# Only governance-ui (port 3000) is publicly accessible.
+
+volumes:
+  clickhouse_data:
+    driver: local
+  clickhouse_logs:
+    driver: local
+  postgres_data:
+    driver: local
+
 networks:
   governance-network:
     driver: bridge
 
-volumes:
-  clickhouse_data:
-  postgres_data:
-
 services:
-  # PostgreSQL Database (default)
+  # ─── PostgreSQL Database ────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
     container_name: governance-postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: governance_engine
-      POSTGRES_USER: governance
-      POSTGRES_PASSWORD: governance_pass_change_me
+      POSTGRES_DB: ${DB_NAME:-governance_engine}
+      POSTGRES_USER: ${DB_USERNAME:-governance}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-governance_pass_change_me} # CHANGEME
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"  # Using 5433 on host to avoid conflict
+      - "127.0.0.1:5433:5432"
     networks:
       - governance-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U governance -d governance_engine"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-governance} -d ${DB_NAME:-governance_engine}"]
       interval: 5s
       timeout: 3s
       retries: 10
       start_period: 10s
-    restart: unless-stopped
 
-  # ClickHouse for telemetry data
+  # ─── ClickHouse for Telemetry Data ─────────────────────────────────
   clickhouse:
     image: clickhouse/clickhouse-server:25.3
     container_name: governance-clickhouse
-    ports:
-      - "8123:8123"
-      - "9000:9000"
+    restart: unless-stopped
+    user: "101:101"
     environment:
-      CLICKHOUSE_DB: default
-      CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: ""
+      CLICKHOUSE_DB: ${CLICKHOUSE_DATABASE:-default}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-governance_clickhouse} # CHANGEME
     volumes:
       - clickhouse_data:/var/lib/clickhouse
-      - ./clickhouse-config.xml:/etc/clickhouse-server/users.d/default-user.xml:ro
+      - clickhouse_logs:/var/log/clickhouse-server
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
     networks:
       - governance-network
     ulimits:
@@ -50,17 +61,17 @@ services:
         soft: 262144
         hard: 262144
     healthcheck:
-      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
       interval: 5s
-      timeout: 3s
+      timeout: 5s
       retries: 10
-      start_period: 30s
-    restart: unless-stopped
+      start_period: 1s
 
-  # OpenTelemetry Collector
+  # ─── OpenTelemetry Collector ───────────────────────────────────────
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.102.1
     container_name: governance-otel-collector
+    restart: unless-stopped
     command: ["--config=/etc/otel/config.yaml"]
     depends_on:
       clickhouse:
@@ -75,14 +86,14 @@ services:
       - ./logs:/var/log/myapp:ro
     networks:
       - governance-network
-    restart: unless-stopped
 
-  # Governance UI Application
+  # ─── Governance UI Application ─────────────────────────────────────
   governance-ui:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: governance-ui
+    restart: unless-stopped
     env_file:
       - .env.docker
     ports:
@@ -96,4 +107,3 @@ services:
         condition: service_started
     networks:
       - governance-network
-    restart: unless-stopped
