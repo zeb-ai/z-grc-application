@@ -22,14 +22,7 @@ export const GET = withAuthRequired<any>(
   ) => {
     try {
       const { id } = await params;
-      const groupId = Number.parseInt(id, 10);
-
-      if (Number.isNaN(groupId)) {
-        return NextResponse.json(
-          { error: "Invalid group ID" },
-          { status: 400 },
-        );
-      }
+      const groupId = id;
 
       const dataSource = await initializeDatabase();
       const groupRepository = dataSource.getRepository(Group);
@@ -172,14 +165,7 @@ export const PUT = withAuthRequired<any>(
       }
 
       const { id } = await params;
-      const groupId = Number.parseInt(id, 10);
-
-      if (Number.isNaN(groupId)) {
-        return NextResponse.json(
-          { error: "Invalid group ID" },
-          { status: 400 },
-        );
-      }
+      const groupId = id;
 
       const body = await request.json();
       const validationResult = UpdateGroupSchema.safeParse(body);
@@ -251,14 +237,7 @@ export const DELETE = withAuthRequired<any>(
       }
 
       const { id } = await params;
-      const groupId = Number.parseInt(id, 10);
-
-      if (Number.isNaN(groupId)) {
-        return NextResponse.json(
-          { error: "Invalid group ID" },
-          { status: 400 },
-        );
-      }
+      const groupId = id;
 
       const dataSource = await initializeDatabase();
       const groupRepository = dataSource.getRepository(Group);

@@ -22,7 +22,7 @@ export class GrcKey {
   user_id!: string; // Creator's user_id
 
   @Column()
-  group_id!: number; // Associated user group
+  group_id!: string; // Associated user group
 
   @Column()
   governance_url!: string; // host in encoded payload

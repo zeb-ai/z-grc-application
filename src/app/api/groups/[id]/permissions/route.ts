@@ -16,14 +16,7 @@ export const GET = withAuthRequired<any>(
       }
 
       const { id } = await params;
-      const groupId = Number.parseInt(id, 10);
-
-      if (Number.isNaN(groupId)) {
-        return NextResponse.json(
-          { error: "Invalid group ID" },
-          { status: 400 },
-        );
-      }
+      const groupId = id;
 
       // Check if user is superadmin
       const isSuperadmin = await isSuperAdmin(currentUser.user_id);

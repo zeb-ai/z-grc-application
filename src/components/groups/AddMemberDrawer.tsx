@@ -36,7 +36,7 @@ interface SelectedMember {
 }
 
 interface AddMemberDrawerProps {
-  groupId: number;
+  groupId: string;
   onMembersAdded: () => void;
 }
 

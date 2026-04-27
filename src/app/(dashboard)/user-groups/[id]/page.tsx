@@ -23,7 +23,7 @@ import type { Group, GroupMember } from "@/types/group";
 export default function UserGroupDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const groupId = Number.parseInt(params.id as string, 10);
+  const groupId = params.id as string;
 
   const [group, setGroup] = useState<Group | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,7 +57,7 @@ export default function UserGroupDetailPage() {
   }, [groupId, router]);
 
   useEffect(() => {
-    if (!Number.isNaN(groupId)) {
+    if (groupId) {
       fetchGroupDetails();
     }
   }, [groupId, fetchGroupDetails]);

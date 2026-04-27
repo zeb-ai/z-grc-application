@@ -30,7 +30,7 @@ import {
 import type { GrcKey } from "@/database/entities/GrcKey.entity";
 
 interface Group {
-  group_id: number;
+  group_id: string;
   name: string;
 }
 

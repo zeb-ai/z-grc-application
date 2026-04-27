@@ -11,7 +11,7 @@ import { initializeDatabase } from "@/lib/db";
 const CreateKeySchema = z.object({
   name: z.string().min(1, "Name is required").max(255),
   description: z.string().max(500).optional(),
-  group_id: z.number().int().positive("Valid group_id is required"),
+  group_id: z.string().min(1, "Valid group_id is required"),
   governance_url: z.url("Governance URL must be valid"),
   otel_endpoint: z.url("OpenTelemetry endpoint must be valid").optional(),
 });
@@ -45,7 +45,7 @@ export const GET = withAuthRequired<any>(async (request: NextRequest, _context) 
     // Filter by specific group if provided
     let keys: GrcKey[];
     if (groupIdParam) {
-      const groupId = Number.parseInt(groupIdParam);
+      const groupId = groupIdParam;
       if (!groupIds.includes(groupId)) {
         return NextResponse.json(
           { error: "You are not a member of this group" },
@@ -145,7 +145,7 @@ export const POST = withAuthRequired<any>(async (request: NextRequest, _context)
       uid: user.user_id,
       host: governance_url,
       otel: otel_endpoint || "",
-      gid: group_id.toString(),
+      gid: group_id,
     };
 
     const encodedKey = encode(keyData);

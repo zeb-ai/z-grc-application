@@ -4,16 +4,17 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from "typeorm";
+import { v7 as uuidv7 } from "uuid";
 import { Quota } from "./Quota.entity";
 import type { User } from "./User.entity";
 import { UserGroup } from "./UserGroup.entity";
 
 @Entity("group")
 export class Group {
-  @PrimaryGeneratedColumn()
-  group_id: number;
+  @PrimaryColumn("varchar", { length: 36 })
+  group_id: string;
 
   @Column()
   name: string;
@@ -40,4 +41,11 @@ export class Group {
     (userGroup) => userGroup.group,
   )
   members: UserGroup[];
+
+  @BeforeInsert()
+  generateId() {
+    if (!this.group_id) {
+      this.group_id = uuidv7();
+    }
+  }
 }

@@ -1,20 +1,22 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from "typeorm";
+import { v7 as uuidv7 } from "uuid";
 
 @Entity("pending_invitations")
 export class PendingInvitation {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryColumn("varchar", { length: 36 })
+  id!: string;
 
   @Column()
   email!: string;
 
   @Column()
-  group_id!: number;
+  group_id!: string;
 
   @Column({ type: "varchar", length: 20 })
   role!: "admin" | "member";
@@ -28,4 +30,11 @@ export class PendingInvitation {
 
   @CreateDateColumn()
   created_at!: Date;
+
+  @BeforeInsert()
+  generateId() {
+    if (!this.id) {
+      this.id = uuidv7();
+    }
+  }
 }

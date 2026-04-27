@@ -26,14 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { user_id, policy_id, cost } = validationResult.data;
-    const group_id = Number.parseInt(policy_id);
-
-    if (Number.isNaN(group_id)) {
-      return NextResponse.json(
-        { error: "Invalid policy_id format" },
-        { status: 400 },
-      );
-    }
+    const group_id = policy_id;
 
     const dataSource = await initializeDatabase();
     const quotaRepository = dataSource.getRepository(Quota);

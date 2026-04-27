@@ -25,7 +25,7 @@ import { EditQuotaDrawer } from "./EditQuotaDrawer";
 
 interface MembersTableProps {
   members: GroupMember[];
-  groupId: number;
+  groupId: string;
   onMemberRemoved: () => void;
   onQuotaUpdated: () => void;
   canManageQuota?: boolean;

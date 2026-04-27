@@ -34,6 +34,8 @@ export async function POST(request: NextRequest) {
 
     const dataSource = await initializeDatabase();
     const userRepository = dataSource.getRepository(User);
+    const pendingInvitationRepository =
+      dataSource.getRepository(PendingInvitation);
 
     // Check if user already exists
     const existingUser = await userRepository.findOne({ where: { email } });
@@ -45,11 +47,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check for pending invitation to use its ID as user_id
+    const firstPendingInvitation = await pendingInvitationRepository.findOne({
+      where: {
+        email,
+        status: "pending",
+      } as any,
+      order: {
+        created_at: "ASC",
+      } as any,
+    });
+
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Create new user
+    // Create new user with invitation ID if available
     const user = userRepository.create({
+      user_id: firstPendingInvitation ? firstPendingInvitation.id : undefined,
       name,
       email,
       password: hashedPassword,
@@ -58,8 +72,6 @@ export async function POST(request: NextRequest) {
     await userRepository.save(user);
 
     // Check for pending invitations and auto-accept them
-    const pendingInvitationRepository =
-      dataSource.getRepository(PendingInvitation);
     const userGroupRepository = dataSource.getRepository(UserGroup);
     const quotaRepository = dataSource.getRepository(Quota);
     const groupRepository = dataSource.getRepository(Group);

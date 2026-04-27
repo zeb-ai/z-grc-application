@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { GrcKey } from "@/database/entities/GrcKey.entity";
 import { Group } from "@/database/entities/Group.entity";
+import { PendingInvitation } from "@/database/entities/PendingInvitation.entity";
 import { Quota } from "@/database/entities/Quota.entity";
 import { User } from "@/database/entities/User.entity";
 import { UserGroup } from "@/database/entities/UserGroup.entity";
@@ -11,9 +12,10 @@ import { withServiceAuth } from "@/lib/service-auth-middleware";
 
 const GenerateKeySchema = z.object({
   email: z.string().email("Invalid email address"),
-  group_id: z.number().int().positive("Valid group_id is required"),
+  group_id: z.string().min(1, "Valid group_id is required"),
   name: z.string().min(1, "Name is required").max(255),
   description: z.string().max(500).optional(),
+  role: z.enum(["admin", "member"]).default("member"),
 });
 
 /**
@@ -36,7 +38,7 @@ export const POST = withServiceAuth(async (request: NextRequest) => {
       );
     }
 
-    const { email, group_id, name, description } = validationResult.data;
+    const { email, group_id, name, description, role } = validationResult.data;
 
     const dataSource = await initializeDatabase();
     const userRepository = dataSource.getRepository(User);
@@ -44,28 +46,51 @@ export const POST = withServiceAuth(async (request: NextRequest) => {
     const userGroupRepository = dataSource.getRepository(UserGroup);
     const quotaRepository = dataSource.getRepository(Quota);
     const grcKeyRepository = dataSource.getRepository(GrcKey);
+    const pendingInvitationRepository =
+      dataSource.getRepository(PendingInvitation);
 
-    let userCreated = false;
     let memberAdded = false;
+    let invitationCreated = false;
 
-    // Step 1: Check if user exists, create if not
+    // Step 1: Check if user exists
     let user = await userRepository.findOne({ where: { email } });
+    let userId: string;
 
     if (!user) {
-      const namePart = email.split("@")[0];
-      const { v7: uuidv7 } = await import("uuid");
-
-      user = userRepository.create({
-        user_id: uuidv7(),
-        email,
-        name: namePart,
-        is_superadmin: false,
+      // User doesn't exist - create/get pending invitation and use invitation.id as user_id
+      let invitation = await pendingInvitationRepository.findOne({
+        where: {
+          email,
+          group_id,
+          status: "pending",
+        } as any,
       });
 
-      await userRepository.save(user);
-      userCreated = true;
+      if (!invitation) {
+        // Create pending invitation for the user
+        invitation = pendingInvitationRepository.create({
+          email,
+          group_id,
+          role,
+          status: "pending",
+        });
 
-      console.log(`Auto-created user: ${email} (${user.user_id})`);
+        await pendingInvitationRepository.save(invitation);
+        invitationCreated = true;
+
+        console.log(
+          `Created pending invitation for ${email} to group ${group_id} (invitation ID: ${invitation.id})`,
+        );
+      }
+
+      // Use invitation ID as the user_id
+      userId = invitation.id;
+
+      console.log(
+        `Using invitation ID ${invitation.id} as user_id for unregistered user ${email}`,
+      );
+    } else {
+      userId = user.user_id;
     }
 
     // Step 2: Verify group exists
@@ -80,60 +105,59 @@ export const POST = withServiceAuth(async (request: NextRequest) => {
       );
     }
 
-    // Step 3: Check if user is member of group, add if not
-    let userGroup = await userGroupRepository.findOne({
-      where: {
-        user_id: user.user_id,
-        group_id,
-      },
-    });
-
-    if (!userGroup) {
-      userGroup = userGroupRepository.create({
-        id: Date.now(),
-        user_id: user.user_id,
-        group_id,
-        role: "member",
+    // Step 3: Check if user is member of group, add if not (only if real user)
+    if (user) {
+      let userGroup = await userGroupRepository.findOne({
+        where: {
+          user_id: userId,
+          group_id,
+        },
       });
 
-      try {
-        await userGroupRepository.save(userGroup);
-        memberAdded = true;
-        console.log(`Auto-added user ${email} to group ${group_id}`);
-      } catch (saveError) {
-        console.error("Failed to save UserGroup:", saveError);
-        throw new Error(
-          `Failed to add user to group: ${saveError instanceof Error ? saveError.message : "Unknown error"}`,
-        );
+      if (!userGroup) {
+        userGroup = userGroupRepository.create({
+          user_id: userId,
+          group_id,
+          role: "member",
+        });
+
+        try {
+          await userGroupRepository.save(userGroup);
+          memberAdded = true;
+          console.log(`Auto-added user ${email} to group ${group_id}`);
+        } catch (saveError) {
+          console.error("Failed to save UserGroup:", saveError);
+          throw new Error(
+            `Failed to add user to group: ${saveError instanceof Error ? saveError.message : "Unknown error"}`,
+          );
+        }
       }
-    }
 
-    // Step 4: Check/Create quota for user in group
-    let quota = await quotaRepository.findOne({
-      where: {
-        user_id: user.user_id,
-        group_id,
-      },
-    });
-
-    if (!quota) {
-      quota = quotaRepository.create({
-        user_id: user.user_id,
-        group_id,
-        total_cost: 0,
-        used_cost: 0,
+      // Step 4: Check/Create quota for user in group
+      let quota = await quotaRepository.findOne({
+        where: {
+          user_id: userId,
+          group_id,
+        },
       });
 
-      try {
-        await quotaRepository.save(quota);
-        console.log(
-          `Created quota for user ${email} in group ${group_id}`,
-        );
-      } catch (saveError) {
-        console.error("Failed to save Quota:", saveError);
-        throw new Error(
-          `Failed to create quota: ${saveError instanceof Error ? saveError.message : "Unknown error"}`,
-        );
+      if (!quota) {
+        quota = quotaRepository.create({
+          user_id: userId,
+          group_id,
+          total_cost: 0,
+          used_cost: 0,
+        });
+
+        try {
+          await quotaRepository.save(quota);
+          console.log(`Created quota for user ${email} in group ${group_id}`);
+        } catch (saveError) {
+          console.error("Failed to save Quota:", saveError);
+          throw new Error(
+            `Failed to create quota: ${saveError instanceof Error ? saveError.message : "Unknown error"}`,
+          );
+        }
       }
     }
 
@@ -148,7 +172,7 @@ export const POST = withServiceAuth(async (request: NextRequest) => {
     const grcKey = grcKeyRepository.create({
       name,
       description: description || "",
-      user_id: user.user_id,
+      user_id: userId,
       group_id,
       governance_url,
       otel_endpoint,
@@ -168,10 +192,10 @@ export const POST = withServiceAuth(async (request: NextRequest) => {
 
     // Step 7: Generate encoded key
     const keyData: ApiKeyData = {
-      uid: user.user_id,
+      uid: userId,
       host: governance_url,
       otel: otel_endpoint,
-      gid: group_id.toString(),
+      gid: group_id,
     };
 
     const encodedKey = encode(keyData);
@@ -185,12 +209,15 @@ export const POST = withServiceAuth(async (request: NextRequest) => {
           name: grcKey.name,
           description: grcKey.description,
           encoded_key: encodedKey,
-          user_id: user.user_id,
+          user_id: userId,
           group_id: grcKey.group_id,
           created_at: grcKey.created_at,
         },
-        user_created: userCreated,
+        invitation_created: invitationCreated,
         member_added: memberAdded,
+        note: !user
+          ? `User has not registered yet. API key will work immediately. The key will appear in the UI after the user registers with email: ${email}`
+          : undefined,
       },
       { status: 201 },
     );

@@ -18,14 +18,7 @@ export const DELETE = withAuthRequired<any>(
       }
 
       const { id, userId } = await params;
-      const groupId = Number.parseInt(id, 10);
-
-      if (Number.isNaN(groupId)) {
-        return NextResponse.json(
-          { error: "Invalid group ID" },
-          { status: 400 },
-        );
-      }
+      const groupId = id;
 
       const dataSource = await initializeDatabase();
       const groupRepository = dataSource.getRepository(Group);

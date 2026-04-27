@@ -25,7 +25,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 interface Group {
-  group_id: number;
+  group_id: string;
   name: string;
 }
 
@@ -63,7 +63,7 @@ export function CreateKeyDrawer({
       const payload = {
         name: formData.name,
         description: formData.description || undefined,
-        group_id: Number.parseInt(formData.group_id),
+        group_id: formData.group_id,
         governance_url: governanceUrl,
         otel_endpoint: otelEndpoint,
       };

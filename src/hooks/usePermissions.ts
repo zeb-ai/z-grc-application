@@ -24,7 +24,7 @@ interface PermissionContext {
  *   // Show "Add Member" button
  * }
  */
-export function usePermissions(groupId: number): PermissionContext {
+export function usePermissions(groupId: string): PermissionContext {
   const [role, setRole] = useState<GroupRole | null>(null);
   const [isSuperadmin, setIsSuperadmin] = useState(false);
   const [loading, setLoading] = useState(true);

@@ -16,7 +16,7 @@ export class Quota {
   user_id: string;
 
   @Column()
-  group_id: number;
+  group_id: string;
 
   @Column({ type: "decimal", precision: 10, scale: 6, default: 0 })
   total_cost: number;

@@ -88,7 +88,7 @@ export async function isSuperAdmin(userId: string): Promise<boolean> {
  */
 export async function getUserGroupRole(
   userId: string,
-  groupId: number,
+  groupId: string,
 ): Promise<GroupRole | null> {
   try {
     const dataSource = await initializeDatabase();
@@ -114,7 +114,7 @@ export async function getUserGroupRole(
  */
 export async function canPerform(
   userId: string,
-  groupId: number,
+  groupId: string,
   permission: Permission,
 ): Promise<boolean> {
   try {
@@ -161,7 +161,7 @@ export async function canPerformGlobal(
  */
 export async function getUserPermissionContext(
   userId: string,
-  groupId: number,
+  groupId: string,
 ) {
   const isSuperadmin = await isSuperAdmin(userId);
   const role = await getUserGroupRole(userId, groupId);

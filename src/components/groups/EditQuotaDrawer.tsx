@@ -31,7 +31,7 @@ interface EditQuotaDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   member: GroupMember;
-  groupId: number;
+  groupId: string;
   onSuccess: () => void;
 }
 

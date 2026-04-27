@@ -17,14 +17,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const group_id = Number.parseInt(group_id_param);
-
-    if (Number.isNaN(group_id)) {
-      return NextResponse.json(
-        { error: "Invalid group_id format" },
-        { status: 400 },
-      );
-    }
+    const group_id = group_id_param;
 
     const dataSource = await initializeDatabase();
     const quotaRepository = dataSource.getRepository(Quota);

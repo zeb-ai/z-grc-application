@@ -28,14 +28,7 @@ export const PATCH = withAuthRequired<any>(
       }
 
       const { id, userId } = params;
-      const groupId = Number.parseInt(id, 10);
-
-      if (Number.isNaN(groupId)) {
-        return NextResponse.json(
-          { error: "Invalid group ID" },
-          { status: 400 },
-        );
-      }
+      const groupId = id;
 
       const body = await request.json();
       const validationResult = UpdateQuotaSchema.safeParse(body);

@@ -27,14 +27,7 @@ export const POST = withAuthRequired<any>(
       }
 
       const { id } = await params;
-      const groupId = Number.parseInt(id, 10);
-
-      if (Number.isNaN(groupId)) {
-        return NextResponse.json(
-          { error: "Invalid group ID" },
-          { status: 400 },
-        );
-      }
+      const groupId = id;
 
       const body = await request.json();
       const validationResult = AddMemberSchema.safeParse(body);

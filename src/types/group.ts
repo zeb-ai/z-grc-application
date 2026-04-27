@@ -1,5 +1,5 @@
 export interface Group {
-  group_id: number;
+  group_id: string;
   name: string;
   created_by: string;
   default_cost_limit: number;
@@ -16,7 +16,7 @@ export interface Group {
 export interface GroupMember {
   id: number;
   user_id: string;
-  group_id: number;
+  group_id: string;
   role: string;
   joined_at: Date | string;
   status?: "active" | "pending";
