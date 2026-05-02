@@ -1,4 +1,4 @@
-site_name: Z-GRC Application Documentation
+site_name: Z-GRC App Doc
 site_description: Governance, Risk & Compliance platform by Zeb Labs
 site_author: Zeb Labs
 site_url: https://zeb-ai.github.io/z-grc/
@@ -40,6 +40,9 @@ theme:
 extra_css:
   - stylesheets/theme.css
 
+extra_javascript:
+  - javascripts/external-links.js
+
 extra:
   generator: false
   social:
@@ -55,7 +58,11 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.details
@@ -76,3 +83,9 @@ plugins:
 
 nav:
   - Home: index.md
+  - Quick Start:
+    - Deploy Application: getting-started/quickstart-application.md
+    - Install Package: https://zeb-ai.github.io/z-grc/how-to-use/#1-for-aws-bedrock-model-calls
+    - Proxy Server: https://zeb-ai.github.io/z-grc/how-to-use/#2-for-claude-code
+  - Deployment:
+    - Self-Host Guide: application/deployment.md
