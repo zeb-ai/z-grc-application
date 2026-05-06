@@ -58,7 +58,14 @@ export function CreateKeyDrawer({
     try {
       // Auto-generate URLs from current domain
       const governanceUrl = window.location.origin;
-      const otelEndpoint = `${window.location.protocol}//${window.location.hostname}:4318`;
+      // For production domains, use path-based routing without custom ports
+      // For localhost/127.0.0.1, use direct port access
+      const isLocalhost =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
+      const otelEndpoint = isLocalhost
+        ? `${window.location.protocol}//${window.location.hostname}:4318`
+        : `${window.location.origin}/otel`;
 
       const payload = {
         name: formData.name,

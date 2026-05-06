@@ -168,7 +168,18 @@ export const POST = withServiceAuth(async (request: NextRequest) => {
     const protocol = forwardedProto || "http";
     const governance_url =
       process.env.GOVERNANCE_URL || `${protocol}://${host}`;
-    const otel_endpoint = process.env.OTEL_ENDPOINT || "";
+
+    // Auto-derive OTEL endpoint for external clients
+    // For production domains, use path-based routing without custom ports
+    // For internal Docker, use direct service endpoint
+    let otel_endpoint = process.env.OTEL_ENDPOINT || "";
+    if (!otel_endpoint && host && !host.includes("localhost") && !host.includes("127.0.0.1")) {
+      // Production domain detected - use path-based routing for external clients
+      otel_endpoint = `${protocol}://${host}/otel`;
+    } else if (!otel_endpoint) {
+      // Local development fallback
+      otel_endpoint = "http://localhost:4318";
+    }
 
     // Step 6: Create GRC key record
     const grcKey = grcKeyRepository.create({
