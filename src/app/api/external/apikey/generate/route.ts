@@ -163,7 +163,9 @@ export const POST = withServiceAuth(async (request: NextRequest) => {
 
     // Step 5: Auto-derive governance URL from request
     const host = request.headers.get("host") || "localhost:3000";
-    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+    // Detect protocol from X-Forwarded-Proto header (for proxies/load balancers) or default to http
+    const forwardedProto = request.headers.get("x-forwarded-proto");
+    const protocol = forwardedProto || "http";
     const governance_url =
       process.env.GOVERNANCE_URL || `${protocol}://${host}`;
     const otel_endpoint = process.env.OTEL_ENDPOINT || "";
